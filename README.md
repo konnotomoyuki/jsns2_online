@@ -18,11 +18,11 @@ source ${HOME}/root/bin/thisroot.sh
 $ cp __rootrc__ ${HOME}/.rootrc
 ~~~
 - (Optional) In addtion you can also compile slow control software if you have EPICS-base.
-Edit EPICS_BASE in setenv script to fit your EPIC-base
+-- Edit EPICS_BASE in setenv script to fit your EPIC-base
 ~~~
 export EPICS_BASE=/home/tkonno/epics-base
 ~~~
-Uncomment a line for SLCPACKS in Makefile:
+-- Uncomment a line for SLCPACKS in Makefile:
 ~~~
 # Uncomment this line to compile DAQ slow control software           
 #SLCPACKS  = slc runcontrol
