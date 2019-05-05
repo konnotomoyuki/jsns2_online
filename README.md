@@ -9,12 +9,18 @@ online data analysis including event builidng, pulse reconstruction and event di
 # Initial setup
 - Install ROOT with htto enabled. see https://root.cern.ch/building-root
 - Edit path to root in senenv script
-~~~bash
-$ source ${HOME}/root/bin/thisroot.sh
 ~~~
-- cp rootrc to your home by following command:
+source ${HOME}/root/bin/thisroot.sh
+~~~
+- Copy rootrc to your home by following command:
 ~~~bash
 $ cp __rootrc__ ${HOME}/.rootrc
 ~~~
-- 
+- In addtion you can also compile slow control software if you have EPICS-base.
+Uncomment a line for SLCPACKS in Makefile:
+~~~
+# Uncomment this line to compile DAQ slow control software                                             
+#SLCPACKS  = slc runcontrol
+~~~
+
 
