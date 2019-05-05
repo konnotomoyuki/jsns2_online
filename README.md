@@ -10,9 +10,9 @@ online data analysis including event builidng, pulse reconstruction and event di
  
 # Initial setup
 1. Install and setup ROOT
-  1. If you want to use web DQM, rebuild ROOT with http enabled. See more https://root.cern.ch/building-root
-  1. Edit path to root in senenv script in a line of `source ${HOME}/root/bin/thisroot.sh`
-  1. Copy rootrc to your home by following command: `cp ./__rootrc__ ${HOME}/.rootrc`
+  - If you want to use web DQM, rebuild ROOT with http enabled. See more https://root.cern.ch/building-root
+  - Edit path to root in senenv script in a line of `source ${HOME}/root/bin/thisroot.sh`
+  - Copy rootrc to your home by following command: `cp ./__rootrc__ ${HOME}/.rootrc`
 1. (Optional) In addtion you can also compile slow control software if you have EPICS-base.
 Edit `EPICS_BASE` in setenv script to fit your EPIC-base. 
 And then, uncomment a line of `SLCPACKS` in Makefile:
