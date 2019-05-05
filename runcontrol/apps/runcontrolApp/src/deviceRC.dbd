@@ -1,0 +1,11 @@
+device(stringin,INST_IO,dev_rcstate_stringin,"rcstate_stringin")
+device(stringout,INST_IO,dev_rcrequest_stringout,"rcrequest_stringout")
+
+device(stringin,INST_IO,dev_pvhandler_stringin,"pvhandler_stringin")
+device(ai,INST_IO,dev_pvhandler_ai,"pvhandler_ai")
+device(longin,INST_IO,dev_pvhandler_longin,"pvhandler_longin")
+
+device(stringout,INST_IO,dev_pvhandler_stringout,"pvhandler_stringout")
+device(ao,INST_IO,dev_pvhandler_ao,"pvhandler_ao")
+device(longout,INST_IO,dev_pvhandler_longout,"pvhandler_longout")
+

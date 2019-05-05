@@ -1,0 +1,2 @@
+Library.RootFileInputModule.hh: libjsns2_rootIO.so libCore.so libHist.so libGpad.so libRIO.so 
+Library.RootFileOutputModule.hh: libjsns2_rootIO.so libCore.so libHist.so libGpad.so libRIO.so 

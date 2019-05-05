@@ -1,0 +1,71 @@
+CXX     = g++
+CP      = cp
+MAKE    = make
+MKDIR   = mkdir -p
+AR      = ar rcsv
+RM      = rm -f
+
+#TARGET   = $(shell echo $(PWD) | xargs -i basename {})
+DEPINCS  = base framework database
+
+SRCDIR   = $(JSNS2_HOME)/$(TARGET)/src
+INCDIR   = $(JSNS2_HOME)/$(TARGET)/include
+TMPDIR   = $(JSNS2_HOME)/$(TARGET)/tmp
+LIBDIR   = $(JSNS2_HOME)/$(TARGET)/lib
+
+LIBNAME    = jsns2_$(TARGET)
+LIBTARGET  = $(LIBDIR)/lib$(LIBNAME).so
+
+SRCS     = $(wildcard $(SRCDIR)/*.cc)
+INCS     = $(wildcard $(INCDIR)/*.hh)
+OBJS     = $(SRCS:$(SRCDIR)/%.cc=$(TMPDIR)/%.o)
+DEPS     = $(OBJS:%.o=%.d)
+DICT     = lib$(LIBNAME)
+DICTC    = $(TMPDIR)/$(DICT).cxx
+HEADS    = $(shell ls $(INCDIR)/*.hh | xargs -i basename {})
+
+INCPATH  += -I$(INCDIR) $(shell for dir in $(DEPINCS); do echo "-I$(JSNS2_HOME)/include/"$$dir" "; done)
+
+CFLAGS   = -g -fPIC -O2 -Wall
+CFLAGS  += $(INCPATH)
+CFLAGS  += -I$(shell root-config --cflags)
+
+INSTARGET = $(JSNS2_HOME)/lib/lib$(LIBNAME).so
+
+.PHONY : all clean
+
+all: $(DEPS) $(LIBTARGET) $(INSTARGET)
+
+$(INSTARGET):
+	@ ln -sf $(JSNS2_HOME)/$(TARGET)/lib/lib* $(JSNS2_HOME)/lib/
+	@ echo "<< install lib$(LIBNAME).so succeede!! >>"
+
+clean:
+	@ echo "<< cleaning all $(TARGET) >>"
+	@ $(RM) $(TMPDIR)/*~ $(TMPDIR)/*/*~ $(TMPDIR)/*/*/*~ $(TMPDIR)/\#*\#* $(TMPDIR)/*/\#*\#* 
+	@ $(RM) $(TMPDIR)/*.{d,o,cxx*,pcm} $(LIBDIR)/*.{so,pcm} $(SRCDIR)/*~ $(INCDIR)/*~
+	@ $(RM) $(JSNS2_HOME)/lib/lib$(LIBNAME)*
+
+$(DICTC):
+	@ echo "<< compiling $@ >>"
+	@ cd $(INCDIR)/; if [ ! -e LinkeDef.h ]; then rootcling -f $@ $(INCPATH) $(HEADS) LinkDef.h; fi
+
+$(LIBTARGET) : $(OBJS) $(DICTC) 
+	@ $(MKDIR) $(LIBDIR)
+	@ echo "<< creating shared librariy $@ >>"
+	@ $(CXX) -shared  $(CFLAGS) $^ -o $@ $(LIBS)
+	@ mv $(TMPDIR)/*.pcm $(LIBDIR)/
+	@ echo "<< compiling succeede!! >>"
+
+$(OBJS) : $(TMPDIR)/%.o : $(SRCDIR)/%.cc $(INCDIR)/%.hh
+	@ echo "<< compiling $@ >>"
+	@ $(CXX) -c $(CFLAGS) $< -o $@ 
+
+$(DEPS) : $(TMPDIR)/%.d: $(SRCDIR)/%.cc $(INCDIR)/%.hh
+	@ $(MKDIR) $(TMPDIR)
+	@ echo "<< making dependency $@ >>"
+	@ $(CXX) $(CFLAGS) -MM -MT $(basename $@).o $< -o $@
+
+ifeq ($(findstring clean,${MAKECMDGOALS}),)
+  -include ${DEPS}
+endif

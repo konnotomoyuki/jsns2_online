@@ -1,0 +1,1 @@
+Library.HttpServerModule.hh: libjsns2_httpServer.so libCore.so libHist.so libGpad.so libRIO.so 

@@ -1,0 +1,2 @@
+Library.IDDisplay2D: libjsns2_display.so libTree.so libGeom.so libEve.so
+Library.IDDisplay3D: libjsns2_base.so libjsns2_display.so libTree.so libGeom.so libEve.so

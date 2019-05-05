@@ -1,0 +1,7 @@
+Library.BinData.hh: libjsns2_dqmHist.so libCore.so libHist.so libGpad.so libRIO.so 
+Library.DQMCanvasInputModule.hh: libjsns2_dqmHist.so libCore.so libHist.so libGpad.so libRIO.so 
+Library.DQMCanvasOutputModule.hh: libjsns2_dqmHist.so libCore.so libHist.so libGpad.so libRIO.so 
+Library.DQMHistInputModule.hh: libjsns2_dqmHist.so libCore.so libHist.so libGpad.so libRIO.so 
+Library.DQMHistOutputModule.hh: libjsns2_dqmHist.so libCore.so libHist.so libGpad.so libRIO.so 
+Library.SharedEventBufferInputModule.hh: libjsns2_dqmHist.so libCore.so libHist.so libGpad.so libRIO.so 
+Library.SharedEventBufferOutputModule.hh: libjsns2_dqmHist.so libCore.so libHist.so libGpad.so libRIO.so 

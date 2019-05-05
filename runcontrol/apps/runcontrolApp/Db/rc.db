@@ -1,0 +1,80 @@
+record(stringout, "$(name):RCRequest")
+{
+  field(DESC, "")
+  field(SCAN, "Passive")
+  field(VAL, "")
+  field(DTYP, "rcrequest_stringout")
+}
+
+record(stringin, "$(name):RCState")
+{
+  field(DESC, "")
+  field(SCAN, "I/O Intr")
+  field(VAL, "")
+  field(DTYP, "rcstate_stringin")
+}
+
+record(stringin, "$(name):runState")
+{
+  field(DESC, "")
+  field(SCAN, "I/O Intr")
+  field(VAL, "")
+  field(DTYP, "pvhandler_stringin")
+}
+
+record(longin, "$(name):runNum")
+{
+  field(DESC, "")
+  field(SCAN, "I/O Intr")
+  field(VAL, "")
+  field(DTYP, "pvhandler_longin")
+}
+
+record(longin, "$(name):eventNum")
+{
+  field(DESC, "")
+  field(SCAN, "I/O Intr")
+  field(VAL, "")
+  field(DTYP, "pvhandler_longin")
+}
+
+record(stringout, "$(name):runType")
+{
+  field(DESC, "")
+  field(SCAN, "Passive")
+  field(VAL, "")
+  field(DTYP, "pvhandler_stringout")
+}
+
+record(ai, "$(name):nevents")
+{
+  field(DESC, "")
+  field(SCAN, "I/O Intr")
+  field(VAL, "")
+  field(DTYP, "pvhandler_ai")
+}
+
+record(ai, "$(name):nbytes")
+{
+  field(DESC, "")
+  field(SCAN, "I/O Intr")
+  field(VAL, "")
+  field(DTYP, "pvhandler_ai")
+}
+
+record(ai, "$(name):eventRate")
+{
+  field(DESC, "")
+  field(SCAN, "I/O Intr")
+  field(VAL, "")
+  field(DTYP, "pvhandler_ai")
+}
+
+record(ai, "$(name):flowRate")
+{
+  field(DESC, "")
+  field(SCAN, "I/O Intr")
+  field(VAL, "")
+  field(DTYP, "pvhandler_ai")
+}
+

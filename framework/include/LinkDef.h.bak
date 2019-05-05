@@ -1,0 +1,8 @@
+#pragma link C++ class JSNS2::Analysis::SampleModule+;
+#pragma link C++ class JSNS2::Analysis::RootInputModule+;
+#pragma link C++ class JSNS2::Analysis::RootOutputModule+;
+#pragma link C++ class JSNS2::Analysis::IDDisplay+;
+#pragma link C++ class JSNS2::Analysis::IDDisplay2D+;
+#pragma link C++ class JSNS2::Analysis::IDDisplay3D+;
+#pragma link C++ class JSNS2::Analysis::PMTGeo+;
+#pragma link C++ class std::vector<JSNS2::Analysis::PMTGeo>+;

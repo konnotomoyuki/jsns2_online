@@ -1,0 +1,11 @@
+#!/bin/bash
+
+#export ROOT_INCLUDE_PATH=${PWD}/include:${ROOT_INCLUDE_PATH}
+#source /opt/soft/root/v6.14.04/bin/thisroot.sh
+source ${HOME}/root/bin/thisroot.sh
+
+export JSNS2_HOME=${PWD}
+export PATH=${PWD}/bin:${PATH}
+export LD_LIBRARY_PATH=${PWD}/lib:${LIBPATH}
+export LIBPATH=${PWD}/lib:${LIBPATH}
+
