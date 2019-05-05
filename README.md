@@ -5,6 +5,7 @@ online data analysis including event builidng, pulse reconstruction and event di
 ## Requirement :
 - Linux OS (Tested with scientific linux 7)
 - Root 6 (6.14.06 or later)
+- bash
 
 # Initial setup
 - Install ROOT with htto enabled. see https://root.cern.ch/building-root
@@ -16,10 +17,14 @@ source ${HOME}/root/bin/thisroot.sh
 ~~~bash
 $ cp __rootrc__ ${HOME}/.rootrc
 ~~~
-- In addtion you can also compile slow control software if you have EPICS-base.
+- (Optional) In addtion you can also compile slow control software if you have EPICS-base.
+Edit EPICS_BASE in setenv script to fit your EPIC-base
+~~~
+export EPICS_BASE=/home/tkonno/epics-base
+~~~
 Uncomment a line for SLCPACKS in Makefile:
 ~~~
-# Uncomment this line to compile DAQ slow control software                                             
+# Uncomment this line to compile DAQ slow control software           
 #SLCPACKS  = slc runcontrol
 ~~~
 
