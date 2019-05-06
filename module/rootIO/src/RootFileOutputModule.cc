@@ -1,6 +1,7 @@
 #include "RootFileOutputModule.hh"
 
 #include "DataStore.hh"
+#include "LogFile.hh"
 
 using namespace JSNS2;
 
@@ -47,6 +48,7 @@ Bool_t RootFileOutputModule::EndRun()
 
 Bool_t RootFileOutputModule::Finalize()
 {
+  LogFile::info("Root tree is saved to %s", m_file->GetName());
   m_file->cd();
   m_tree->Write();
   m_file->Close();

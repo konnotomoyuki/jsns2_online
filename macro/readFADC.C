@@ -1,13 +1,12 @@
 /*
-  usage : root -l <rootfile with tree> read.C
+  usage : root -l <rootfile with tree> readFADC.C
 */
 
-using namespace JSNS2;
-
-void read() {
+void readFADC() {
+  using namespace JSNS2;
   TTree* tree = (TTree*)_file0->Get("tree");
   RawEvent* ev = new RawEvent();
-  tree->SetBranchAddress("JSNS2::RawData::Event", &ev);
+  tree->SetBranchAddress("JSNS2::RawEvent", &ev);
   TH1* h = new TH1D("h", "", 256, 0, 512);
   int count = 0;
   for (int iev = 0; iev < 10/*tree->GetEntries()*/; iev++) {

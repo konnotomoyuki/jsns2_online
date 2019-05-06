@@ -20,7 +20,7 @@ namespace JSNS2 {
     
   public:
     static LogLevel getLogLevel(const std::string& str);
-    static void SetRecordDate(bool record_date) { g_recor_ddate = g_recor_ddate; }
+    static void SetRecordDate(bool record_date);
 
   private:
     LogFile() {}
@@ -37,7 +37,7 @@ namespace JSNS2 {
     static LogLevel g_threshold;
     static std::string g_filename;
     static Date g_date;
-    static bool g_recor_ddate;
+    static bool g_record_date;
       
     // member functions
   public:

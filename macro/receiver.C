@@ -1,4 +1,5 @@
 #include "RawDataSocketInputModule.hh"
+#include "RawDataFileOutputModule.hh"
 #include "SharedEventBufferOutputModule.hh"
 #include "Processor.hh"
 
@@ -11,12 +12,17 @@ int receiver()
   input->SetPort(9090);
   input->OpenStatus("/receiver.shm");
 
-  SharedEventBufferOutputModule* output = new SharedEventBufferOutputModule();
-  output->SetPath("/DQMEvent.shm");
-  output->SetNword(10000000);
+  SharedEventBufferOutputModule* shm = new SharedEventBufferOutputModule();
+  shm->SetPath("/DQMEvent.shm");
+  shm->SetNword(10000000);
+
+  RawDataFileOutputModule* output = new RawDataFileOutputModule();
+  output->SetPath("/home/usr/tkonno/");
+  output->SetAutoMode(true);
 
   Processor process;
   process.Add(input);
+  process.Add(shm);
   process.Add(output);
   process.Run();
   return 0;

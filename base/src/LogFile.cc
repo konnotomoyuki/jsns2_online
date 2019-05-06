@@ -25,7 +25,7 @@ Mutex LogFile::g_mutex;
 LogFile::LogLevel LogFile::g_threshold;
 std::string LogFile::g_filename;
 Date LogFile::g_date;
-bool LogFile::g_recor_ddate = true;
+bool LogFile::g_record_date = true;
 
 LogFile::LogLevel LogFile::getLogLevel(const std::string& str)
 {
@@ -44,6 +44,11 @@ LogFile::LogLevel LogFile::getLogLevel(const std::string& str)
     return FATAL;
   }
   return UNKNOWN;
+}
+
+void LogFile::SetRecordDate(bool record_date)
+{
+  g_record_date = record_date;
 }
 
 void LogFile::open(const std::string& filename, LogLevel threshold)
@@ -159,8 +164,9 @@ int LogFile::put_impl(const std::string& msg, LogLevel level, va_list ap)
     open();
   }
   std::stringstream ss;
-  if (g_recor_ddate)
+  if (g_record_date) {
     ss << "[" << date.toString() << "] ";
+  }
   std::string color = "\x1b[49m\x1b[39m";
   switch (level) {
     case DEBUG:   color = "\x1b[49m\x1b[39m"; ss << "[DEBUG] "; break;
