@@ -34,4 +34,8 @@ You can do test run with dummy data generation using following command
 source setenv # do it if not
 root -l -q -b macro/test.C
 ~~~
-Then, you will get dump.root
+Then, you will get dump.root <br/>
+Next, you can analyze the root file using ana.C
+~~~bash
+root -l -q -b macro/ana.C
+~~~
