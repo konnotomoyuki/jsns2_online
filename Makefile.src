@@ -49,12 +49,13 @@ clean:
 $(DICTC): $(INCS)
 	@ echo "<< compiling $@ >>"
 	@ cd $(INCDIR)/; if [ ! -e LinkeDef.h ]; then rootcling -f $@ $(INCPATH) $(HEADS) LinkDef.h; fi
+	@ echo $(TMPDIR)/lib$(LIBNAME)_rdict.pcm
+	@ if [ -e $(TMPDIR)/lib$(LIBNAME)_rdict.pcm ]; then mv $(TMPDIR)/lib$(LIBNAME)_rdict.pcm $(LIBDIR)/; fi
 
 $(LIBTARGET) : $(OBJS) $(DICTC) 
 	@ $(MKDIR) $(LIBDIR)
 	@ echo "<< creating shared librariy $@ >>"
 	@ $(CXX) -shared  $(CFLAGS) $^ -o $@ $(LIBS)
-	@ if [ -e $(TMPDIR)/lib$(LIBNAME)_rdict.pcm ]; then mv $(TMPDIR)/lib$(LIBNAME)_rdict.pcm $(LIBDIR)/; fi
 	@ echo "<< compiling succeede!! >>"
 
 $(OBJS) : $(TMPDIR)/%.o : $(SRCDIR)/%.cc $(INCDIR)/%.hh
