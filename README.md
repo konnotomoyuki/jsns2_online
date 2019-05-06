@@ -13,7 +13,7 @@ online data analysis including event builidng, pulse reconstruction and event di
 1. Edit path to root in senenv script in a line of `source ${HOME}/root/bin/thisroot.sh`
 1. Copy rootrc to your home by following command: `cp ./__rootrc__ ${HOME}/.rootrc`
 1. (Optional) You can also compile slow control software if you have EPICS-base. <br/>
-Edit `EPICS_BASE` in setenv script to fit your EPIC-base.  <br/>
+Edit `EPICS_HOME` in setenv script to fit your EPIC-base.  <br/>
 And then, uncomment a line of `SLCPACKS` in Makefile:
 1. Finally set environment variables in your terminal
 ~~~bash
