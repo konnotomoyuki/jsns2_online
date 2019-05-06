@@ -14,7 +14,7 @@ runcontrol_registerRecordDeviceDriver pdbbase
 ## Load record instances
 dbLoadRecords("db/rc.db", "name=Rec")
 
-rcConfig("/home/tkonno/jsns2/runcontrol/slc/lib/libjsns2_slc_noROOT.so", "EB", "Rec")
+rcConfig("/home/tkonno/jsns2_online/runcontrol/slc/lib/libjsns2_slc_noROOT.so", "EB", "Rec")
 
 cd ${TOP}/iocBoot/${IOC}
 iocInit

@@ -48,7 +48,7 @@ void IDDisplay3D::Draw(Option_t* opt)
   TGeoMedium *Al = new TGeoMedium("Root Material",2, matAl);
   TGeoMedium *Clinder = new TGeoMedium("Root Material",3, matAcr);
 
-  TGeoSphere *sphere = new TGeoSphere("sph", 1.0, g_rPMT, 0, 180., 90, 270);
+  TGeoSphere *sphere = new TGeoSphere("sph", 1.0, g_rPMT, 0, 180., 0, 360);
   TGeoScaledShape *scaled = new TGeoScaledShape("ell", sphere, new TGeoScale(0.5,1,1));
 
   TGeoVolume *tank_barrel = m_geom->MakeTube("Tank_barrel", Clinder, g_radius, g_radius, g_height);
@@ -85,7 +85,7 @@ void IDDisplay3D::Draw(Option_t* opt)
     double x = 0, y = 0;
     TGeoVolume *roundPMT = new TGeoVolume(Form("PMT_%d", id), scaled, Al);
     roundPMT->SetLineColor(kYellow);
-    roundPMT->SetTransparency(10);
+    //roundPMT->SetTransparency(10);
     TGeoCombiTrans* ct = new TGeoCombiTrans(0, 0, 0, NULL);
     if (location == 0) { // top
       x = r * TMath::Sin(phi);

@@ -34,7 +34,7 @@ public:
     // stop timer
     TurnOff();
     mutex.Lock();
-    cond.Wait(mutex);
+    cond.Wait(mutex, 1);
     memcpy(buf, p, BUF_SIZE);
     mutex.Unlock();
     TMemFile* file = new TMemFile("DQMHist.map", buf, BUF_SIZE);
