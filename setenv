@@ -9,4 +9,4 @@ export LD_LIBRARY_PATH=${PWD}/lib:${LIBPATH}
 export LIBPATH=${PWD}/lib:${LIBPATH}
 
 # Edit path to EPICS-base for runcontrol package
-export EPICS_BASE=/home/tkonno/epics-base
+export EPICS_HOME=/home/tkonno/epics-base

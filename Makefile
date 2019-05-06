@@ -20,7 +20,7 @@ $(MAINLIBS): %:
 $(SUBPACKS): %: 
 	@ make -C $@/
 
-$(SLCPAKCS): %:
+$(SLCPACKS): %:
 	@ make -C $@/
 
 clean: 
