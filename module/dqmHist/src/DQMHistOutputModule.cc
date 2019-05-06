@@ -52,10 +52,13 @@ Bool_t DQMHistOutputModule::ProcessEvent()
     for (auto& mod : mods) {
       HistModule* hmod = dynamic_cast<HistModule*>(mod);
       if (hmod == NULL) continue;
+      TDirectory* dir = file->mkdir(hmod->GetName().c_str());
+      dir->cd();
       std::vector<TH1*>& hs(hmod->GetHists());
       for (auto& h : hs) {
 	h->Write();
       }
+      file->cd();
     }
     file->Close();
     char* p = (char*)m_shm.Map();
@@ -77,12 +80,12 @@ Bool_t DQMHistOutputModule::EndRun()
   StoredObject<EventMetaData> meta;
   TFile* file = new TFile(Form("DQM_r%06d.root", meta->GetRunNumber()), "recreate");
   meta->Write();
-  file->cd();
   Processor* pro = GetProcessor();
   std::vector<Module*>& mods(pro->GetModules());
   for (auto& mod : mods) {
     HistModule* hmod = dynamic_cast<HistModule*>(mod);
     if (hmod == NULL) continue;
+    file->cd();
     std::vector<TH1*>& hs(hmod->GetHists());
     for (auto& h : hs) {
       h->Write();

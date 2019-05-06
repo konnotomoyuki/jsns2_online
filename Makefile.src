@@ -46,7 +46,7 @@ clean:
 	@ $(RM) $(TMPDIR)/*.{d,o,cxx*,pcm} $(LIBDIR)/*.{so,pcm} $(SRCDIR)/*~ $(INCDIR)/*~
 	@ $(RM) $(JSNS2_HOME)/lib/lib$(LIBNAME)*
 
-$(DICTC):
+$(DICTC): $(INCS)
 	@ echo "<< compiling $@ >>"
 	@ cd $(INCDIR)/; if [ ! -e LinkeDef.h ]; then rootcling -f $@ $(INCPATH) $(HEADS) LinkDef.h; fi
 
@@ -54,7 +54,7 @@ $(LIBTARGET) : $(OBJS) $(DICTC)
 	@ $(MKDIR) $(LIBDIR)
 	@ echo "<< creating shared librariy $@ >>"
 	@ $(CXX) -shared  $(CFLAGS) $^ -o $@ $(LIBS)
-	@ mv $(TMPDIR)/*.pcm $(LIBDIR)/
+	@ if [ -e $(TMPDIR)/lib$(LIDNAME)_rdict.pcm ]; then mv $(TMPDIR)/lib$(LIDNAME)_rdict.pcm $(LIBDIR)/; fi
 	@ echo "<< compiling succeede!! >>"
 
 $(OBJS) : $(TMPDIR)/%.o : $(SRCDIR)/%.cc $(INCDIR)/%.hh

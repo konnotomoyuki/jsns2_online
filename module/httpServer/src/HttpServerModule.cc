@@ -7,6 +7,8 @@
 #include <TKey.h>
 #include <TList.h>
 
+#include <iostream>
+
 using namespace JSNS2;
 
 HttpServerModule::HttpServerModule() : Module ("HttpServer")
@@ -33,6 +35,7 @@ Bool_t HttpServerModule::BeginRun()
 
 Bool_t HttpServerModule::ProcessEvent()
 {
+  gDirectory->cd("/");
   findObject(m_http, gDirectory);
   gSystem->ProcessEvents();
   return true;
@@ -56,11 +59,14 @@ void HttpServerModule::findObject(THttpServer* http, TDirectory* cdir)
   while((key = (TKey*)next())) {
     TObject* obj = cdir->FindObjectAny(key->GetName());
     if (obj->IsA()->InheritsFrom("TH1")) {
-      TH1* h = (TH1*) obj;
-      http->Register(Form("/%s", cdir->GetName()), h);
-    } else if (obj->IsA()->InheritsFrom("TCanvas")) {
+      //TH1* h = (TH1*) obj;
+      //http->Unregister(h);
+      //http->Register(Form("/%s", cdir->GetName()), h);
+    } else if (obj->ClassName() == std::string("TCanvas")) {
       TCanvas* c = (TCanvas*) obj;
-      c->Draw();
+      //c->Draw();
+      std::cout << cdir->GetName() << "/" << c->GetName() << std::endl;
+      http->Unregister(c);
       http->Register(Form("/%s", cdir->GetName()), c);
     } else if (obj->IsA()->InheritsFrom(TDirectory::Class())) {
       TDirectory* dir = (TDirectory*) obj;

@@ -85,6 +85,7 @@ Bool_t DummyEventModule::BeginRun()
 
 Bool_t DummyEventModule::ProcessEvent()
 {
+  m_time += gRandom->Exp(1./300.*1e9) * 16;
   StoredObject<EventMetaData> meta;
   meta->SetEventNumber(m_eventNum);
   StoredObject<RawEvent> ev;
@@ -101,6 +102,7 @@ Bool_t DummyEventModule::ProcessEvent()
   Double_t v[256];
   for (auto& fadc : ev->GetFADCs()) {
     fadc.SetEventCount(m_eventNum);
+    fadc.SetTimeTag(m_time);
     DB::FADCBoard& board(mapping->GetBoard(fadc.GetSerial()));
     Double_t factor = 0;
     for (int ic = 0; ic < 8; ic++) {

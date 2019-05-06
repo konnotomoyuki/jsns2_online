@@ -1,3 +1,0 @@
-Library.CalcPulseCanvasModule.hh: libjsns2_calcPulse.so libCore.so libHist.so libGpad.so libRIO.so 
-Library.CalcPulseEventDisplayModule.hh: libjsns2_calcPulse.so libCore.so libHist.so libGpad.so libRIO.so 
-Library.CalcPulseModule.hh: libjsns2_calcPulse.so libCore.so libHist.so libGpad.so libRIO.so 

@@ -1,6 +1,0 @@
-Library.RawDataFileInputModule.hh: libjsns2_rawIO.so libCore.so libHist.so libGpad.so libRIO.so 
-Library.RawDataFileOutputModule.hh: libjsns2_rawIO.so libCore.so libHist.so libGpad.so libRIO.so 
-Library.RawDataInputModule.hh: libjsns2_rawIO.so libCore.so libHist.so libGpad.so libRIO.so 
-Library.RawDataOutputModule.hh: libjsns2_rawIO.so libCore.so libHist.so libGpad.so libRIO.so 
-Library.RawDataSocketInputModule.hh: libjsns2_rawIO.so libCore.so libHist.so libGpad.so libRIO.so 
-Library.RawDataSocketOutputModule.hh: libjsns2_rawIO.so libCore.so libHist.so libGpad.so libRIO.so 

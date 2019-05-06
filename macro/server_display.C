@@ -13,13 +13,13 @@
   gStyle->SetPadBottomMargin(0);
 
   DQMHistInputModule* input = new DQMHistInputModule();
-  CalcPulseEventDisplayModule* canvas = new CalcPulseEventDisplayModule();
+  HitMapCanvasModule* hitmap = new HitMapCanvasModule();
   HttpServerModule* http = new HttpServerModule();
   http->SetHostname("http:9080");
 
   Processor process;
   process.Add(input);
-  process.Add(canvas);
+  process.Add(hitmap);
   process.Add(http);
   process.Run();
 }

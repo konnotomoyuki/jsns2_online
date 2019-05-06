@@ -1,16 +1,11 @@
-#ifdef __CINT__
-int receiver()
-{
-#else 
-
 #include "RawDataSocketInputModule.hh"
 #include "SharedEventBufferOutputModule.hh"
 #include "Processor.hh"
 
-int main() 
+using namespace JSNS2;
+
+int receiver()
 {
-#endif
-  using namespace JSNS2;
   RawDataSocketInputModule* input = new RawDataSocketInputModule();
   input->SetHostname("localhost");
   input->SetPort(9090);
@@ -25,4 +20,9 @@ int main()
   process.Add(output);
   process.Run();
   return 0;
+}
+
+int main() 
+{
+  return receiver();
 }

@@ -1,8 +1,8 @@
 {
   using namespace JSNS2::DB;
   
-  TFile* file = new TFile(Form("%s/db/PMTGeoMapping.root", getenv("JSNS2_HOME")), "recreate");
-  std::ifstream fin(Form("%s/db/PMTMap_FullPMT_JSNS2.dat", getenv("JSNS2_HOME")));
+  TFile* file = new TFile(Form("%s/data/PMTGeoMapping.root", getenv("JSNS2_HOME")), "recreate");
+  std::ifstream fin(Form("%s/data/PMTMap_FullPMT_JSNS2.dat", getenv("JSNS2_HOME")));
   PMTGeoMapping* mapping = new PMTGeoMapping("PMTGeoMapping");
   int id;
   double r, phi, z;

@@ -1,20 +1,14 @@
-#ifdef __CINT__
-int dummydaq()
-{
-#else 
-
 #include "DummyEventModule.hh"
 #include "RawDataSocketOutputModule.hh"
 #include "Processor.hh"
 
-int main() 
+int dummydaq()
 {
-#endif
   using namespace JSNS2;
 
   DummyEventModule* dummy = new DummyEventModule();
   dummy->SetRunNumber(1010);
-  dummy->SetFilePath("/home/usr/tkonno/jsns/EventDisplayEVE/uniformPositron10MeV-Tree.root");
+  dummy->SetFilePath(Form("%s/uniformPositron10MeV-Tree.root", getenv("JSNS2_HOME")));
   RawDataSocketOutputModule* output = new RawDataSocketOutputModule();
   output->SetHostname("localhost");
   output->SetPort(9090);
@@ -23,4 +17,10 @@ int main()
   process.Add(dummy);
   process.Add(output);
   process.Run();
+  return 0;
+}
+
+int main() 
+{
+  return dummydaq();
 }

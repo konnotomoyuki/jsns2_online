@@ -4,7 +4,6 @@
 #pragma link off all functions;
 #pragma link C++ namespace std;
 #pragma link C++ namespace JSNS2;
-#pragma link C++ class JSNS2::CalcPulseModule+;
-#pragma link C++ class JSNS2::CalcPulseCanvasModule+;
-#pragma link C++ class JSNS2::CalcPulseEventDisplayModule+;
+#pragma link C++ class JSNS2::HitMapHistModule+;
+#pragma link C++ class JSNS2::HitMapCanvasModule+;
 #endif

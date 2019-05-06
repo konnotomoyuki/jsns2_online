@@ -5,8 +5,12 @@ endif
 .PHONY : all clean tools base framework database rawdata display module runcontrol slc
 
 MAINLIBS  = base framework database rawdata display 
-SUBPACKS  = module tools runcontrol
-ALLPACKS  = $(MAINLIBS) $(SUBPACKS)
+SUBPACKS  = module tools 
+
+# Uncomment this line to compile DAQ slow control software 
+#SLCPACKS  = slc runcontrol
+
+ALLPACKS  = $(MAINLIBS) $(SUBPACKS) $(SLCPACKS)
 
 all: inc $(ALLPACKS) 
 
@@ -16,10 +20,15 @@ $(MAINLIBS): %:
 $(SUBPACKS): %: 
 	@ make -C $@/
 
+$(SLCPAKCS): %:
+	@ make -C $@/
+
 clean: 
-	@ for dir in $(ALLPACKS) slc; \
+	@ for dir in $(MAINLIBS); \
 	  do make -f Makefile.src TARGET=$$dir clean; done
-	@ rm -f lib include bin/*
+	@ for dir in $(SUBPACKS) slc; \
+	  do make -C $$dir/ clean; done
+	@ rm -rf lib include bin/*
 
 inc:
 	@ mkdir -p include lib

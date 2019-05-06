@@ -1,4 +1,4 @@
-#include "CalcPulseCanvasModule.hh"
+#include "ViewPulseCanvasModule.hh"
 #include "DBObject.hh"
 
 #include "FADCMapping.hh"
@@ -9,16 +9,16 @@
 
 using namespace JSNS2;
 
-CalcPulseCanvasModule::CalcPulseCanvasModule() : CanvasModule ("CalcPulseCanvas")
+ViewPulseCanvasModule::ViewPulseCanvasModule() : CanvasModule ("ViewPulseCanvas")
 {
 }
 
-CalcPulseCanvasModule::~CalcPulseCanvasModule()
+ViewPulseCanvasModule::~ViewPulseCanvasModule()
 {
 
 }
 
-Bool_t CalcPulseCanvasModule::Initialize()
+Bool_t ViewPulseCanvasModule::Initialize()
 {
   DBObject<DB::FADCMapping> mapping("FADCMapping");
   TCanvas* c = NULL;
@@ -33,13 +33,13 @@ Bool_t CalcPulseCanvasModule::Initialize()
   return true;
 }
 
-Bool_t CalcPulseCanvasModule::BeginRun()
+Bool_t ViewPulseCanvasModule::BeginRun()
 {
   //StoredObject<RawData::Event> ev;
   return true;
 }
 
-Bool_t CalcPulseCanvasModule::ProcessEvent()
+Bool_t ViewPulseCanvasModule::ProcessEvent()
 {
   DBObject<DB::FADCMapping> mapping;
   TDirectory* dir = gDirectory;
@@ -63,12 +63,12 @@ Bool_t CalcPulseCanvasModule::ProcessEvent()
   return true;
 }
 
-Bool_t CalcPulseCanvasModule::EndRun()
+Bool_t ViewPulseCanvasModule::EndRun()
 {
   return true;
 }
 
-Bool_t CalcPulseCanvasModule::Finalize()
+Bool_t ViewPulseCanvasModule::Finalize()
 {
   return true;
 }

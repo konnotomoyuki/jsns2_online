@@ -1,5 +1,5 @@
-#ifndef _JSNS2_CalcPulseModule_h
-#define _JSNS2_CalcPulseModule_h
+#ifndef _JSNS2_HitMapHistModule_h
+#define _JSNS2_HitMapHistModule_h
 
 #include "HistModule.hh"
 
@@ -9,11 +9,11 @@
 
 namespace JSNS2 {
   
-  class CalcPulseModule : public HistModule {
+  class HitMapHistModule : public HistModule {
     
   public:
-    CalcPulseModule();
-    virtual ~CalcPulseModule();
+    HitMapHistModule();
+    virtual ~HitMapHistModule();
     
   public:
     virtual Bool_t Initialize();
@@ -25,7 +25,6 @@ namespace JSNS2 {
   public:
     
   private:
-    std::map<int, std::vector<TH1*> > m_hs;
     TH1* m_PMT_charge_low;
     TH1* m_PMT_timing_low;
     TH1* m_charge_avg_low;

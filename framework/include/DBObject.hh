@@ -12,7 +12,7 @@ namespace JSNS2 {
     DBObject() {}
     DBObject(const char* name) {
       if (!g_stored) {
-	std::string filepath = Form("%s/db/%s.root", getenv("JSNS2_HOME"), name);
+	std::string filepath = Form("%s/data/%s.root", getenv("JSNS2_HOME"), name);
 	TFile* dbfile = new TFile(filepath.c_str());
 	g_stored = (T*)dbfile->Get(name)->Clone();
 	dbfile->Close();

@@ -1,5 +1,5 @@
-#ifndef _JSNS2_CalcPulseCanvasModule_h
-#define _JSNS2_CalcPulseCanvasModule_h
+#ifndef _JSNS2_ViewPulseCanvasModule_h
+#define _JSNS2_ViewPulseCanvasModule_h
 
 #include "CanvasModule.hh"
 
@@ -9,11 +9,11 @@
 
 namespace JSNS2 {
   
-  class CalcPulseCanvasModule : public CanvasModule {
+  class ViewPulseCanvasModule : public CanvasModule {
     
   public:
-    CalcPulseCanvasModule();
-    virtual ~CalcPulseCanvasModule();
+    ViewPulseCanvasModule();
+    virtual ~ViewPulseCanvasModule();
     
   public:
     virtual Bool_t Initialize();

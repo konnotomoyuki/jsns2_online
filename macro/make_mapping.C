@@ -1,7 +1,7 @@
 {
   using namespace JSNS2::DB;
   
-  TFile* file = new TFile(Form("%s/db/FADCMapping.root", getenv("JSNS2_HOME")), "recreate");
+  TFile* file = new TFile(Form("%s/data/FADCMapping.root", getenv("JSNS2_HOME")), "recreate");
   FADCMapping* obj = new FADCMapping("FADCMapping");
 
   int pmtid = 0;

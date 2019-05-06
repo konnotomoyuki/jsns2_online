@@ -34,6 +34,7 @@ namespace JSNS2 {
     std::string m_filepath;
     TFile* m_file;
     TTree* m_tree;
+    ULong64_t m_time;
 
   };
 

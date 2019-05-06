@@ -48,10 +48,13 @@ Bool_t HistOutputModule::EndRun()
   for (auto& mod : mods) {
     HistModule* hmod = dynamic_cast<HistModule*>(mod);
     if (hmod == NULL) continue;
+    TDirectory* dir = file->mkdir(hmod->GetName().c_str());
+    dir->cd();
     std::vector<TH1*>& hs(hmod->GetHists());
     for (auto& h : hs) {
       h->Write();
     }
+    file->cd();
   }
   file->Close();
   delete file;

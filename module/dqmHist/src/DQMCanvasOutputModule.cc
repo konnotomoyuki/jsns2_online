@@ -48,19 +48,18 @@ Bool_t DQMCanvasOutputModule::ProcessEvent()
   meta->Write();
   m_mutex.Lock();
   std::vector<Module*>& mods(pro->GetModules());
-  TDirectory* cdir = file;//gDirectory;
   for (auto& mod : mods) {
     CanvasModule* cmod = dynamic_cast<CanvasModule*>(mod);
     if (cmod == NULL) continue;
-    std::vector<TCanvas*>& cs(cmod->GetCanvases());
-    cdir->cd();
-    TDirectory* dir = cdir->mkdir(cmod->GetName().c_str());
+    TDirectory* dir = file->mkdir(cmod->GetName().c_str());
     dir->cd();
+    std::vector<TCanvas*>& cs(cmod->GetCanvases());
     for (auto& c : cs) {
       c->Write();
     }
+    file->cd();
   }
-  cdir->cd();
+  file->cd();
   file->Close();
   char* p = (char*)m_shm.Map();
   p+= +m_mutex.GetSize();
