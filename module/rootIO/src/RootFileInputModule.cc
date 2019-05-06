@@ -41,6 +41,7 @@ Bool_t RootFileInputModule::BeginRun()
 
 Bool_t RootFileInputModule::ProcessEvent()
 {
+  if (m_count >= m_tree->GetEntries()) return false;
   m_tree->GetEntry(m_count);
   m_count++;
   return true;

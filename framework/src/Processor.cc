@@ -32,10 +32,15 @@ void Processor::Run(UInt_t maxEvent)
 	break;
       } 
       UInt_t count = 0;
+      bool runend = false;
       while (true) {
 	for (auto& mod : m_mods) {
-	  mod->ProcessEvent();
+	  if (!mod->ProcessEvent()) {
+	    runend = true;
+	    break;
+	  }
 	}
+	if (runend) break;
 	if (runNum != ev->GetRunNumber()) {
 	  LogFile::notice("New run %d is started", ev->GetRunNumber());
 	  if (runNum > 0) {
@@ -56,7 +61,7 @@ void Processor::Run(UInt_t maxEvent)
       for (auto& mod : m_mods) {
 	mod->EndRun();
       }
-      if (maxEvent > 0 && count == maxEvent) break;
+      if (runend ||(maxEvent > 0 && count == maxEvent)) break;
     }
   } catch (JSNS2::Exception& e) {
     LogFile::error("Exception detected. terminating process.. %s", e.What());
