@@ -15,6 +15,10 @@ online data analysis including event builidng, pulse reconstruction and event di
 1. (Optional) You can also compile slow control software if you have EPICS-base. <br/>
 Edit `EPICS_BASE` in setenv script to fit your EPIC-base.  <br/>
 And then, uncomment a line of `SLCPACKS` in Makefile:
+1. Finally set environment variables in your terminal
+~~~bash
+source setenv
+~~~
 
 Now, it is ready to compile the package!
 
@@ -25,3 +29,9 @@ make
 ~~~
 
 # Test software
+You can do test run with dummy data generation using following command
+~~~bash
+source setenv # do it if not
+root -l -q -b macro/test.C
+~~~
+Then, you will get dump.root
