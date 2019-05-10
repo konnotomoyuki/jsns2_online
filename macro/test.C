@@ -10,5 +10,5 @@
   Processor process;
   process.Add(dummy);
   process.Add(output);
-  process.Run(1000);
+  process.Run(100);
 }

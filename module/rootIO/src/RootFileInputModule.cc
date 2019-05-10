@@ -2,6 +2,8 @@
 
 #include "DataStore.hh"
 
+#include <TList.h>
+
 using namespace JSNS2;
 
 RootFileInputModule::RootFileInputModule() : Module ("RootFileInput")
@@ -25,6 +27,15 @@ Bool_t RootFileInputModule::Initialize()
 {
   m_file = new TFile(m_path.c_str());
   m_tree = (TTree*)m_file->Get("tree");
+  TList* list = (TList*)m_file->Get("list");
+  if (list) {
+    TIter next(list);
+    TObject *obj;
+    while ((obj = next())){
+      TObject* cobj = obj->Clone();
+      Add(cobj);
+    }
+  }
   std::map<std::string, TObject*>& map(DataStore::Instance().GetList());
   for (std::map<std::string, TObject*>::iterator it = map.begin();
        it != map.end(); it++) {

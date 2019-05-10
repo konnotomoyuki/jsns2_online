@@ -3,6 +3,8 @@
 #include "DataStore.hh"
 #include "LogFile.hh"
 
+#include <TList.h>
+
 using namespace JSNS2;
 
 RootFileOutputModule::RootFileOutputModule()
@@ -48,8 +50,16 @@ Bool_t RootFileOutputModule::EndRun()
 
 Bool_t RootFileOutputModule::Finalize()
 {
+  TList* list = new TList();
+  list->SetName("list");
+  std::map<std::string, TObject*>& map(DataStore::Instance().GetList());
+  for (std::map<std::string, TObject*>::iterator it = map.begin();
+       it != map.end(); it++) {
+    list->Add(it->second);
+  }
   LogFile::info("Root tree is saved to %s", m_file->GetName());
   m_file->cd();
+  list->Write("list", 1);
   m_tree->Write();
   m_file->Close();
   return true;
