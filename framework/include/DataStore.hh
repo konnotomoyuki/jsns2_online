@@ -17,7 +17,7 @@ namespace JSNS2 {
     static DataStore g_ds;
     
   public:
-    virtual ~DataStore() {}
+    virtual ~DataStore();
     
   private:
     DataStore() {}
@@ -26,7 +26,9 @@ namespace JSNS2 {
     TObject* Add(TObject* obj, bool allocated = false);
     TObject* Find(const char* name);
     std::map<std::string, TObject*>& GetList() { return m_objs; }
-    
+    void Delete(const char* name);
+    void Reset();
+
   private:
     std::map<std::string, TObject*> m_objs;
     

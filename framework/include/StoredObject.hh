@@ -25,6 +25,9 @@ namespace JSNS2 {
     StoredObject() : m_ptr(NULL)
     {
       m_ptr = (T*)DataStore::Instance().Find(T::Class_Name());
+      if (!m_ptr) {
+	//throw(ObjectNotFoundException(T::Class_Name()))
+      }
     }
     StoredObject(T* obj, bool allocated = false) : m_ptr(obj)
     {

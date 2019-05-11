@@ -14,11 +14,9 @@
   gSystem->Load("libjsns2_httpServer.so");
   gSystem->Load("libjsns2_recoPulseSimple.so");
   gSystem->Load("libjsns2_viewPulse.so");
-  gROOT->SetStyle("Plain"); 
+
   gStyle->SetPalette(1);
-  gStyle->SetOptStat(0);
   gStyle->SetTitleBorderSize(0);
-  gStyle->SetOptStat("");
   gStyle->SetLabelFont(62,"");
   gStyle->SetLabelSize(0.047,"");
   gStyle->SetLabelFont(62,"xyz");
@@ -33,9 +31,10 @@
   gStyle->SetStripDecimals(kFALSE);
   gStyle->SetPadLeftMargin(0.15);
   gStyle->SetPadRightMargin(0.15);
-  gStyle->SetStatW(0.35);
-  gStyle->SetStatH(0.25);
+  //gStyle->SetStatW(0.35);
+  //gStyle->SetStatH(0.25);
   gStyle->SetPadTickX(kTRUE);
   gStyle->SetPadTickY(kTRUE);
   gStyle->SetNumberContours(99);
+  gStyle->SetOptStat(0);
 }

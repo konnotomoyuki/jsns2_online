@@ -36,10 +36,8 @@ Bool_t RootFileInputModule::Initialize()
       Add(cobj);
     }
   }
-  std::map<std::string, TObject*>& map(DataStore::Instance().GetList());
-  for (std::map<std::string, TObject*>::iterator it = map.begin();
-       it != map.end(); it++) {
-    m_tree->SetBranchAddress(it->first.c_str(), &(it->second));
+  for (auto& it : DataStore::Instance().GetList()) {
+    m_tree->SetBranchAddress(it.first.c_str(), &(it.second));
   }  
   m_count = 0;
   return true;
