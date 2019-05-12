@@ -1,11 +1,12 @@
 {
   using namespace JSNS2::DB;
+  using namespace JSNS2;
   
   TFile* file = new TFile(Form("%s/data/FADCMapping.root", getenv("JSNS2_HOME")), "recreate");
   FADCMapping* obj = new FADCMapping("FADCMapping");
 
   int pmtid = 0;
-  for (int i = 0; i < 200/4; i++) {
+  for (int i = 0; i < 192/4; i++) {
     FADCBoard board;
     int serial = 0x1000+0x4*i;
     board.SetSerial(serial);

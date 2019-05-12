@@ -122,7 +122,7 @@ void eventdisplay3d()
   tank->AddNode(tank_barrel, 3, new TGeoCombiTrans(0, 0, 0, NULL));
 
   TGeoVolume *PMTarray = new TGeoVolumeAssembly("Triangular Holder");
-  std::ifstream fin("PMTMap_FullPMT_JSNS2.dat");
+  std::ifstream fin(Form("%s/data/PMTMap_FullPMT_JSNS2.dat", getenv("JSNS2_HOME")));
   int id;
   double r, phi, z;
   int nPMTs = 0;

@@ -50,21 +50,16 @@ void IDDisplay3D::Draw(Option_t* opt)
 
   TGeoSphere *sphere = new TGeoSphere("sph", 1.0, g_rPMT, 0, 180., 0, 360);
   TGeoScaledShape *scaled = new TGeoScaledShape("ell", sphere, new TGeoScale(0.5,1,1));
-
   TGeoVolume *tank_barrel = m_geom->MakeTube("Tank_barrel", Clinder, g_radius, g_radius, g_height);
   TGeoVolume *tank_top = m_geom->MakeTube("Tank_top", Clinder, 0, g_radius, 0);
   TGeoVolume *tank_bottom = m_geom->MakeTube("Tank_top", Clinder, 0, g_radius, 0);
-  tank_top->SetFillColor(kBlue);
-  tank_top->SetLineColor(kWhite);
-  tank_top->SetTransparency(60);
-  tank_bottom->SetFillColor(kBlue);
-  tank_bottom->SetLineColor(kWhite);
-  //tank_bottom->SetLineColor(kBlue);
-  tank_bottom->SetTransparency(60);
-  tank_barrel->SetFillColor(kBlue);
-  tank_barrel->SetLineColor(kWhite);
-  //tank_barrel->SetLineColor(kBlue);
-  tank_barrel->SetTransparency(60);
+  tank_top->SetLineColor(kBlue);
+  tank_top->SetTransparency(50);
+  tank_bottom->SetLineColor(kBlue);
+  tank_bottom->SetTransparency(50);
+  tank_barrel->SetLineColor(kBlue);
+  tank_barrel->SetLineWidth(2);
+  tank_barrel->SetTransparency(50);
   
   TGeoVolume *tank = new TGeoVolumeAssembly("Tank");
   tank->AddNode(tank_top, 1, new TGeoCombiTrans(0, 0, g_height, NULL));
@@ -88,20 +83,22 @@ void IDDisplay3D::Draw(Option_t* opt)
     //roundPMT->SetTransparency(10);
     TGeoCombiTrans* ct = new TGeoCombiTrans(0, 0, 0, NULL);
     if (location == 0) { // top
-      x = r * TMath::Sin(phi);
-      y = r * TMath::Cos(phi);
+      x = r * TMath::Cos(phi);
+      y = r * TMath::Sin(phi);
       ct->RotateY(-90);
       ct->SetDx(x);
       ct->SetDy(y);
       ct->SetDz(z);
     } else if (location == 1) { // barrel
+      x = r * TMath::Cos(phi);
+      y = r * TMath::Sin(phi);
       ct->RotateZ(phi / TMath::Pi() * 180);
-      ct->SetDx(r * TMath::Cos(phi));
-      ct->SetDy(r * TMath::Sin(phi));
+      ct->SetDx(x);
+      ct->SetDy(y);
       ct->SetDz(z);
     } else if (location == 2) { // bottom
-      x = r * TMath::Sin(phi);
-      y = r * TMath::Cos(phi);
+      x = r * TMath::Cos(phi);
+      y = r * TMath::Sin(phi);
       ct->RotateY(90);
       ct->SetDx(x);
       ct->SetDy(y);
@@ -133,6 +130,7 @@ void IDDisplay3D::Update(TH1* h)
     Double_t data = h->GetBinContent(i+1);
     TGeoVolume* vol = m_PMTs->GetNode(i)->GetVolume();
     if (data < min) {
+       vol->SetVisibility(false);
     } else{
       Color_t color =TColor::GetColorPalette(TColor::GetNumberOfColors() - 1);
       for ( Int_t c = 0; c < TColor::GetNumberOfColors(); c++ ) {
@@ -141,6 +139,7 @@ void IDDisplay3D::Update(TH1* h)
 	  break;
 	}
       }
+      vol->SetVisibility(true);
       vol->SetLineColor(color);
     }
   }

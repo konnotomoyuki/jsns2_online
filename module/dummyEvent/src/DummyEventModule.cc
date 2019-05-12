@@ -6,11 +6,14 @@
 #include "RawFADCArray.hh"
 #include "DBObject.hh"
 #include "FADCMapping.hh"
+#include "PMTGeoMapping.hh"
 
 #include <TMath.h>
 #include <TRandom3.h>
+#include <TVector3.h>
 
 #include <cstdlib>
+#include <iostream>
 
 using namespace JSNS2;
 
@@ -62,6 +65,7 @@ Bool_t DummyEventModule::BeginRun()
   meta->SetRunNumber(m_runNum);
   meta->SetRunType("dummy");
   DBObject<DB::FADCMapping> mapping("FADCMapping");
+  DBObject<DB::PMTGeoMapping> pmtgeo("PMTGeoMapping");
   m_eventNum = 0;
   return true;
 }
@@ -86,10 +90,23 @@ Bool_t DummyEventModule::ProcessEvent()
     m_tree->GetEntry(m_eventNum % (int)m_tree->GetEntries());
   }
   DBObject<DB::FADCMapping> mapping;
+  DBObject<DB::PMTGeoMapping> pmtgeo;
   Double_t v[256];
   UInt_t buf[1024];
   StoredObject<RawFADCArray> fadcs;
   fadcs->Reset();
+  const double Radius  = 1849.04 ;     //Radius of the acrylic tank
+  const double Height = 1470;     //Height of the acrylic tank
+  Double_t x, y, z;
+  while (true) {
+    z = (gRandom->Rndm() - 0.5) * Height * 2;
+    x = (gRandom->Rndm() - 0.5) * 2 * Radius;
+    y = (gRandom->Rndm() - 0.5) * 2 * Radius;
+    if (x*x+y*y<Radius*Radius) break;
+  }
+  TVector3 vtx(x,y,z);
+  Double_t charge = gRandom->Rndm();
+
   for (auto& ib : mapping->GetBoards()) {
     DB::FADCBoard& board(ib.second);
     RawFADC fadc;
@@ -110,10 +127,16 @@ Bool_t DummyEventModule::ProcessEvent()
 	else 
 	  factor = 0;
       } else {
-	if (ic % 2 == 0) {
-	  factor = 5000 * gRandom->Gaus(1.5, 2);
-	}
-	if (factor < 0) factor = 0;
+	const DB::PMTGeo& pmt(pmtgeo->Get(ch.GetPMT()));
+	double r = pmt.GetR();
+	double phi = pmt.GetPhi();
+	double z = pmt.GetZ();
+	double x = r * TMath::Cos(phi);
+	double y = r * TMath::Sin(phi);
+	TVector3 pos (x,y,z);
+	Double_t d = (pos - vtx).Mag();
+	factor = charge * 1000*10000./d;
+	if (factor < 100) factor = 0;
       }
       for (size_t i = 0; i < samples.size(); i++) {
 	v[i] = 244.5 + 2.*rand()/RAND_MAX - 1.;

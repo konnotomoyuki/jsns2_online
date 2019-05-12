@@ -2,7 +2,9 @@
 
 if [ ! -e /opt/gcc-4.8.5/bin/gcc ]; then
     # Edit path to your root setup
-    source /opt/soft/root/v6.14.06/bin/thisroot.sh
+    if [ -e /opt/soft/root/v6.14.06/bin/thisroot.sh ]; then
+	source /opt/soft/root/v6.14.06/bin/thisroot.sh
+    fi
 else
     ## setting enviroment variables in KEKCC
     module load gcc/485
