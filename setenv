@@ -1,7 +1,15 @@
 #!/bin/bash
 
-# Edit path to your root setup
-source /opt/soft/root/v6.14.06/bin/thisroot.sh
+if [ ! -e /opt/gcc-4.8.5/bin/gcc ]; then
+    # Edit path to your root setup
+    source /opt/soft/root/v6.14.06/bin/thisroot.sh
+else
+    ## setting enviroment variables in KEKCC
+    module load gcc/485
+    module load python/2.7
+    export PATH=/sw/packages/cmake3/bin:${PATH}
+    source /sw/packages/root/6.16.00/bin/thisroot.sh
+fi
 
 export JSNS2_HOME=${PWD}
 export PATH=${PWD}/bin:${PATH}
