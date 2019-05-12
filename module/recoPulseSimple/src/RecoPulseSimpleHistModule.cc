@@ -1,7 +1,7 @@
 #include "RecoPulseSimpleHistModule.hh"
 
 #include "StoredObject.hh"
-#include "PMTHitSummary.hh"
+#include "RawPulseArray.hh"
 
 #include <TH1D.h>
 
@@ -75,7 +75,7 @@ Bool_t RecoPulseSimpleHistModule::BeginRun()
 
 Bool_t RecoPulseSimpleHistModule::ProcessEvent()
 {
-  StoredObject<PMTHitSummary> pmts;
+  StoredObject<RawPulseArray> pmts;
   Int_t nHits_low = 0;
   Double_t totalQ_low = 0;
   Double_t maxQ_low = 0;
@@ -85,30 +85,27 @@ Bool_t RecoPulseSimpleHistModule::ProcessEvent()
   Double_t maxQ_high = 0;
   Double_t hitT_high = 0;
   // fills low gain channels
-  for (auto ip : pmts->GetList(false)) {
-    PMTHit& pmt(ip.second);
-    if (pmt.GetTime() > 0) { 
-      hitT_low += pmt.GetTime();
-      nHits_low++;
-      if (maxQ_low < pmt.GetCharge()) maxQ_low = pmt.GetCharge();
-      totalQ_low += pmt.GetCharge();
+  for (auto p : (*pmts)()) {
+    if (p.GetGain()) {
+      if (p.GetTime() > 0) { 
+	hitT_high += p.GetTime();
+	nHits_high++;
+	if (maxQ_high < p.GetCharge()) maxQ_high = p.GetCharge();
+	totalQ_high += p.GetCharge();
+      }
+    } else {
+      if (p.GetTime() > 0) { 
+	hitT_low += p.GetTime();
+	nHits_low++;
+	if (maxQ_low < p.GetCharge()) maxQ_low = p.GetCharge();
+	totalQ_low += p.GetCharge();
+      }
     }
   }
   m_nHits_low->Fill(nHits_low);
   m_TotalQ_low->Fill(totalQ_low);
   m_Qratio_low->Fill(maxQ_low/totalQ_low);
   m_hitT_low->Fill(hitT_low/nHits_low);
-
-  // fills high gain channels
-  for (auto ip : pmts->GetList(true)) {
-    PMTHit& pmt(ip.second);
-    if (pmt.GetTime() > 0) { 
-      hitT_high += pmt.GetTime();
-      nHits_high++;
-      if (maxQ_high < pmt.GetCharge()) maxQ_high = pmt.GetCharge();
-      totalQ_high += pmt.GetCharge();
-    }
-  }
   m_nHits_high->Fill(nHits_high);
   m_TotalQ_high->Fill(totalQ_high);
   m_Qratio_high->Fill(maxQ_high/totalQ_high);

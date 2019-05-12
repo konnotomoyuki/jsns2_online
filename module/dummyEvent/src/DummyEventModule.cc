@@ -3,6 +3,7 @@
 #include "StoredObject.hh"
 #include "EventMetaData.hh"
 #include "RawEvent.hh"
+#include "RawFADC.hh"
 #include "DBObject.hh"
 #include "FADCMapping.hh"
 
@@ -59,26 +60,7 @@ Bool_t DummyEventModule::BeginRun()
   StoredObject<EventMetaData> meta;
   meta->SetRunNumber(m_runNum);
   meta->SetRunType("dummy");
-
   DBObject<DB::FADCMapping> mapping("FADCMapping");
-  StoredObject<RawEvent> ev;
-  ev->SetHeaderSize(3);
-  ev->SetHeaderMagic(0xfa);
-  ev->SetRunNumber(m_runNum);
-  ev->SetTrailerMagic(0xcafebabe);
-  ev->GetFADCs().clear();
-  for (auto& ib : mapping->GetBoards()) {
-    DB::FADCBoard& board(ib.second);
-    FADC fadc;
-    fadc.SetSerial(board.GetSerial());
-    fadc.SetBoard(board.GetId());
-    fadc.SetEventSize(256/4 * 8 + 4);
-    fadc.SetChannelMask(0xFF);
-    for (int i = 0; i < 8; i++) {
-      fadc.GetSamples(i).resize(256);
-    }
-    ev->GetFADCs().push_back(fadc);
-  }
   m_eventNum = 0;
   return true;
 }
@@ -89,6 +71,10 @@ Bool_t DummyEventModule::ProcessEvent()
   StoredObject<EventMetaData> meta;
   meta->SetEventNumber(m_eventNum);
   StoredObject<RawEvent> ev;
+  ev->Reset();
+  ev->SetHeaderSize(3);
+  ev->SetHeaderMagic(0xfa);
+  ev->SetTrailerMagic(0xcafebabe);
   if (m_eventNum > 100000) {
     m_eventNum = 0;
     m_runNum++;
@@ -100,14 +86,21 @@ Bool_t DummyEventModule::ProcessEvent()
   }
   DBObject<DB::FADCMapping> mapping;
   Double_t v[256];
-  for (auto& fadc : ev->GetFADCs()) {
+  UInt_t buf[1024];
+  for (auto& ib : mapping->GetBoards()) {
+    DB::FADCBoard& board(ib.second);
+    RawFADC fadc;
+    fadc.SetSerial(board.GetSerial());
+    fadc.SetBoard(board.GetId());
+    fadc.SetChannelMask(0xFF);
+    fadc.SetEventSize(8 * 248 / 4 + 4);
     fadc.SetEventCount(m_eventNum);
     fadc.SetTimeTag(m_time);
-    DB::FADCBoard& board(mapping->GetBoard(fadc.GetSerial()));
     Double_t factor = 0;
     for (int ic = 0; ic < 8; ic++) {
       DB::FADCChannel& ch(board.GetChannel(ic));
-      std::vector<UChar_t>& samples(fadc.GetSamples(ic));
+      std::vector<UChar_t>& samples(fadc[ic]);
+      samples.resize(248);
       if (m_tree) {
 	if (numHitsPMT->size() > (size_t)ch.GetPMT())
 	  factor = 300 * numHitsPMT->at(ch.GetPMT());
@@ -125,11 +118,13 @@ Bool_t DummyEventModule::ProcessEvent()
       int t = (factor> 0 &&m_tree)?timePMT->at(ch.GetPMT()):(2.*rand()/RAND_MAX);
       for (size_t i = 0; i < samples.size(); i++) {
 	if (i+t < samples.size())
-	  v[i+t] += m_f->Eval(i*2) * factor * (ic%2==0?0.2:1.0);
+	  v[i+t] += m_f->Eval(i*2) * factor * (ch.GetGain()%2==0?0.2:1.0);
 	if (v[i] < 0) v[i] = 0;
-	samples[i] = (UShort_t)v[i];
+	samples[i] = (UChar_t)v[i];
       }
     }
+    int nword = fadc.Write(buf);
+    ev->Add(RawDataBlock(nword, buf));
   }
   m_eventNum++;
   return true;

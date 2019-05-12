@@ -1,7 +1,8 @@
 #include "RecoPulseSimpleModule.hh"
 
 #include "RawEvent.hh"
-#include "PMTHitSummary.hh"
+#include "RawFADCArray.hh"
+#include "RawPulseArray.hh"
 #include "StoredObject.hh"
 #include "DBObject.hh"
 #include "FADCMapping.hh"
@@ -22,17 +23,7 @@ RecoPulseSimpleModule::~RecoPulseSimpleModule()
 Bool_t RecoPulseSimpleModule::Initialize()
 {
   DBObject<DB::FADCMapping> mapping("FADCMapping");
-  StoredObject<PMTHitSummary>::Create();
-  StoredObject<PMTHitSummary> pmts;
-  for (auto& ib : mapping->GetBoards()) {
-    DB::FADCBoard& board(ib.second);
-    for (auto& ic : board.GetChannels()) {
-      DB::FADCChannel& ch(ic.second);
-      PMTHit p(ch.GetPMT());
-      pmts->Add(ch.GetPMT(), p);
-    }
-  }
-
+  StoredObject<RawPulseArray>::Create();
   return true;
 }
 
@@ -44,10 +35,11 @@ Bool_t RecoPulseSimpleModule::BeginRun()
 
 Bool_t RecoPulseSimpleModule::ProcessEvent()
 {
-  StoredObject<RawEvent> ev;
-  StoredObject<PMTHitSummary> pmts;
+  StoredObject<RawFADCArray> fadcs;
+  StoredObject<RawPulseArray> pulses;
+  pulses->Reset();
   DBObject<DB::FADCMapping> mapping;
-  for (auto& fadc : ev->GetFADCs()) {
+  for (auto& fadc : (*fadcs)()) {
     if (!mapping->HasBoard(fadc.GetSerial())) {
       LogFile::error("Unknown FADC serial 0x%x", fadc.GetSerial());
       continue;
@@ -55,22 +47,21 @@ Bool_t RecoPulseSimpleModule::ProcessEvent()
     DB::FADCBoard& board(mapping->GetBoard(fadc.GetSerial()));
     for (auto& ic : board.GetChannels()) {
       DB::FADCChannel& ch(ic.second);
-      PMTHit& pmt(pmts->Get(ch.GetPMT(), ch.GetGain()));
-      PMTHit p(ch.GetPMT());
-      std::vector<UChar_t>& samples(fadc.GetSamples(ch.GetId()));
+      RawPulse pulse(ch.GetPMT(), ch.GetGain());
+      std::vector<UChar_t>& samples(fadc[ch.GetId()]);
       for (size_t i = 0; i < samples.size(); i++) {
-	if (i < 25) p.SetPedestal(p.GetPedestal()+samples[i]);
-	else if (i == 25) p.SetPedestal(p.GetPedestal() / 25.);
+	if (i < 25) pulse.SetPedestal(pulse.GetPedestal()+samples[i]);
+	else if (i == 25) pulse.SetPedestal(pulse.GetPedestal() / 25.);
 	else if (i < 100) {
-	  p.SetCharge(p.GetCharge() + p.GetPedestal() - samples[i]);
-	  if (p.GetTime() == 0 && p.GetPedestal() - samples[i] > (ch.GetGain()%2 == 0?5:10)) {
-	    p.SetTime(i * 2);
+	  pulse.SetCharge(pulse.GetCharge() + pulse.GetPedestal() - samples[i]);
+	  if (pulse.GetTime() == 0 && pulse.GetPedestal() - samples[i] > (ch.GetGain()%2 == 0?5:10)) {
+	    pulse.SetTime(i * 2);
 	  }
 	} else {
 	  break;
 	}
       }
-      pmt = p;
+      pulses->Add(pulse);
     }
   }
   return true;

@@ -58,6 +58,7 @@ namespace JSNS2 {
       
     public:
       void Add(const PMTGeo& PMT);
+      UInt_t GetNPMTs() { return m_PMTs.size(); }
       std::map<int, PMTGeo>& GetPMTs() { return m_PMTs; }
       const std::map<int, PMTGeo>& GetPMTs() const { return m_PMTs; }
       const PMTGeo& Get(int id) const { return m_PMTs.at(id); }

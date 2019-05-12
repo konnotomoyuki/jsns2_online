@@ -41,10 +41,18 @@ Bool_t SharedEventBufferOutputModule::ProcessEvent()
 {
   if (m_prescale == 0 || m_count % m_prescale == 0) {
     StoredObject<RawEvent> ev;
-    UInt_t nword = ev->Write(m_buf);
-    if (!m_shm.IsWritable(nword)) return true;
+    UInt_t c = 0;
+    memcpy(m_buf, &ev->GetHeader(), ev->GetHeaderSize() * sizeof(int));
+    c += ev->GetHeaderSize();
+    for (auto& block : (*ev)()) {
+      memcpy(m_buf+c, block.Ptr(), block.GetSize() * sizeof(int));
+      c += block.GetSize();
+    }
+    memcpy(m_buf+c, &ev->GetTrailer(), ev->GetTrailerSize() * sizeof(int));
+    c += ev->GetTrailerSize();
+    if (!m_shm.IsWritable(c)) return true;
     m_count++;
-    return m_shm.Write(m_buf, nword) > 0;
+    return m_shm.Write(m_buf, c) > 0;
   }
   m_count++;
   return true;

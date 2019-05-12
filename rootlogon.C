@@ -31,8 +31,8 @@
   gStyle->SetStripDecimals(kFALSE);
   gStyle->SetPadLeftMargin(0.15);
   gStyle->SetPadRightMargin(0.15);
-  //gStyle->SetStatW(0.35);
-  //gStyle->SetStatH(0.25);
+  gStyle->SetStatW(0.35);
+  gStyle->SetStatH(0.25);
   gStyle->SetPadTickX(kTRUE);
   gStyle->SetPadTickY(kTRUE);
   gStyle->SetNumberContours(99);

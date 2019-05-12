@@ -1,14 +1,15 @@
-#ifndef _JSNS2_PMTHit_h_
-#define _JSNS2_PMTHit_h_
+#ifndef _JSNS2_RawPulse_h_
+#define _JSNS2_RawPulse_h_
 
 #include <TObject.h>
 
 namespace JSNS2 {
 
-  class PMTHit : public TObject {
+  class RawPulse : public TObject {
     
   private:
     Int_t m_id;
+    Bool_t m_gain;
     Float_t m_charge;
     Float_t m_time;
     Float_t m_hight;
@@ -17,13 +18,15 @@ namespace JSNS2 {
     
   public:
     // default constructor
-    PMTHit(Int_t id = -1);
-    virtual ~PMTHit();
-    PMTHit& operator=(const PMTHit& p);
+    RawPulse(Int_t id = -1, Bool_t gain = false);
+    virtual ~RawPulse();
+    RawPulse& operator=(const RawPulse& p);
     
   public:
     Int_t GetId() const { return m_id; }
     void SetId(Int_t id) { m_id = id; }
+    Bool_t GetGain() const { return m_gain; }
+    void SetGain(Bool_t gain) { m_gain = gain; }
     Float_t GetCharge() const { return m_charge; }
     void SetCharge(Float_t charge) { m_charge = charge; }
     Float_t GetTime() const { return m_time; }
@@ -35,7 +38,7 @@ namespace JSNS2 {
     Float_t GetPedestal() const { return m_pedestal; }
     void SetPedestal(Float_t pedestal) { m_pedestal = pedestal; }
     
-    ClassDef(PMTHit, 1); 
+    ClassDef(RawPulse, 1); 
     
   };
 
