@@ -13,7 +13,8 @@ INCDIR   = $(JSNS2_HOME)/module/$(TARGET)/include
 TMPDIR   = $(JSNS2_HOME)/module/$(TARGET)/tmp
 LIBDIR   = $(JSNS2_HOME)/module/$(TARGET)/lib
 
-ROOTLIBSO = libCore.so libHist.so $(shell cat $(JSNS2_HOME)/module/$(TARGET)/rootlib.txt)
+ROOTLIBTX = $(JSNS2_HOME)/module/$(TARGET)/rootlib.txt
+ROOTLIBSO = libCore.so libHist.so $(shell if [ -e $(ROOTLIBTXT) ]; then cat $(ROOTLIBTX); fi)
 
 LIBNAME    = jsns2_$(TARGET)
 LIBTARGET  = $(LIBDIR)/lib$(LIBNAME).so
@@ -51,6 +52,7 @@ clean:
 $(DICTC):
 	@ echo "<< compiling $@ >>"
 	@ cd $(INCDIR)/; rootcling -f $@ $(INCPATH) $(HEADS) LinkDef.h
+	@ mkdir -p $(LIBDIR)/
 	@ mv $(TMPDIR)/lib$(LIBNAME)_rdict.pcm $(LIBDIR)/
 	@ $(RM) $(LIBDIR)/lib$(LIBNAME).rootmap
 	@ for mod in $(HEADS);\
