@@ -1,20 +1,25 @@
-#include "FADC.hh"
+#include "RawFADC.hh"
 
 #include <cstring>
 
-ClassImp(JSNS2::FADC);
+ClassImp(JSNS2::RawFADC);
 
 using namespace JSNS2;
 
-FADC::FADC()
-  : m_serial(0), m_eventSize(0), m_magic(0), 
+RawFADC::RawFADC()
+  : m_serial(0), m_eventSize(0), m_magic(0xa), 
     m_channelMask(0), m_pattern(0), m_board(0), 
     m_eventCount(0), m_timeTag(0)
 {
 
 }
 
-FADC::FADC(const FADC& fadc)
+RawFADC::RawFADC(UInt_t* buf)
+{
+  Read(buf);
+}
+
+RawFADC::RawFADC(const RawFADC& fadc)
 {
   m_serial = fadc.m_serial;
   m_eventSize = fadc.m_eventSize;
@@ -29,11 +34,11 @@ FADC::FADC(const FADC& fadc)
     m_samples[i] = fadc.m_samples[i];
 }
 
-FADC::~FADC()
+RawFADC::~RawFADC()
 {
 }
 
-UInt_t FADC::Read(UInt_t* buf)
+UInt_t RawFADC::Read(UInt_t* buf)
 {
   if (buf != NULL) {
     m_serial = *buf;
@@ -78,15 +83,14 @@ UInt_t FADC::Read(UInt_t* buf)
   return 0;
 }
 
-UInt_t FADC::Write(UInt_t* buf)
+UInt_t RawFADC::Write(UInt_t* buf)
 {
   if (buf != NULL) {
     *buf = m_serial;
     buf++;
     *buf = (0x0FFFFFFF & m_eventSize) | ((m_magic & 0xF) << 28);
     buf++;
-    *buf = (m_channelMask & 0xFF) |
-      ((m_pattern & 0xFFFF) << 8) |
+    *buf = (m_channelMask & 0xFF) | ((m_pattern & 0xFFFF) << 8) |
       ((m_board & 0x1F)<< 27);
     buf++;
     *buf = m_eventCount & 0x00FFFFFF;

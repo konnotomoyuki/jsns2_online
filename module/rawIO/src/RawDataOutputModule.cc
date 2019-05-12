@@ -56,9 +56,12 @@ Bool_t RawDataOutputModule::ProcessEvent()
 {
   StoredObject<RawEvent> ev;
   if (m_prescale == 0 || m_count % m_prescale == 0) {
-    UInt_t nword = ev->Write(m_buf);
+    m_fd->Write(&ev->GetHeader(), ev->GetHeaderSize() * sizeof(int));
+    for (auto& block : (*ev)()) {
+      m_fd->Write(block.Ptr(), block.GetSize() * sizeof(int));
+    }
+    m_fd->Write(&ev->GetTrailer(), ev->GetTrailerSize() * sizeof(int));
     m_count++;
-    UInt_t c = m_fd->Write(m_buf, nword * sizeof(int)) > 0;
     if (m_shm.GetFd() > 0) {
       RunStatus* status = (RunStatus*)m_shm.Map();
       status->runNum = ev->GetRunNumber();
@@ -66,7 +69,7 @@ Bool_t RawDataOutputModule::ProcessEvent()
       strcpy(status->state, "RUNNING");
       status->eventNum = ev->GetEventNumber();
       status->nevents = status->nevents+1;
-      status->nbytes = status->nbytes + c * sizeof(int);
+      status->nbytes = status->nbytes + ev->GetSize() * sizeof(int);
     }
   }
   m_count++;

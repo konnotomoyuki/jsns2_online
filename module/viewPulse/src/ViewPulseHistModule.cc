@@ -4,8 +4,7 @@
 #include "FADCMapping.hh"
 
 #include "StoredObject.hh"
-#include "RawEvent.hh"
-#include "PMTHitSummary.hh"
+#include "RawFADCArray.hh"
 
 #include "LogFile.hh"
 
@@ -46,7 +45,6 @@ Bool_t ViewPulseHistModule::Initialize()
 
 Bool_t ViewPulseHistModule::BeginRun()
 {
-  StoredObject<PMTHitSummary> pmts;
   for (auto& ih : m_hs) {
     std::vector<TH1*>& hs(ih.second);
     for (auto& h : hs) {
@@ -58,9 +56,9 @@ Bool_t ViewPulseHistModule::BeginRun()
 
 Bool_t ViewPulseHistModule::ProcessEvent()
 {
-  StoredObject<RawEvent> ev;
+  StoredObject<RawFADCArray> fadcs;
   DBObject<DB::FADCMapping> mapping;
-  for (auto& fadc : ev->GetFADCs()) {
+  for (auto& fadc : (*fadcs)()) {
     if (!mapping->HasBoard(fadc.GetSerial())) {
       LogFile::error("Unknown FADC serial 0x%x", fadc.GetSerial());
       continue;
@@ -69,7 +67,7 @@ Bool_t ViewPulseHistModule::ProcessEvent()
     std::vector<TH1*>& hs(m_hs[fadc.GetSerial()]);
     for (auto& ic : board.GetChannels()) {
       DB::FADCChannel& ch(ic.second);
-      std::vector<UChar_t>& samples(fadc.GetSamples(ch.GetId()));
+      std::vector<UChar_t>& samples(fadc[ch.GetId()]);
       TH1* h = hs[ch.GetId()];
       for (size_t i = 0; i < samples.size(); i++) {
 	h->SetBinContent(i+1, samples[i]);

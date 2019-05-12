@@ -1,8 +1,9 @@
 #include "RawDataInputModule.hh"
 
-#include "RawEvent.hh"
 #include "StoredObject.hh"
 #include "EventMetaData.hh"
+#include "RawEvent.hh"
+#include "RawFADCArray.hh"
 #include "RunStatus.hh"
 
 using namespace JSNS2;
@@ -34,6 +35,7 @@ Bool_t RawDataInputModule::Initialize()
   m_buf = new UInt_t[1024*1024*5];//20MB                                                                                 
   StoredObject<EventMetaData>::Create();
   StoredObject<RawEvent>::Create();
+  StoredObject<RawFADCArray>::Create();
   return true;
 }
 
@@ -54,26 +56,21 @@ Bool_t RawDataInputModule::BeginRun()
 
 Bool_t RawDataInputModule::Read()
 {
-  UInt_t c = 0;
-  int ret = m_fd->Read(m_buf+c, sizeof(int));
-  c++;
-  UInt_t hsize = (0xFFFF & m_buf[0]);
-  ret = m_fd->Read(m_buf+c, (hsize - 1) * sizeof(int));
-  c += hsize - 1;
-  UInt_t nboards = m_buf[2];
-  for (unsigned int i = 0; i < nboards; i++) {
-    ret = m_fd->Read(m_buf+c, sizeof(int)); // read serial number
-    c++;
-    ret = m_fd->Read(m_buf+c, sizeof(int)); // read waveform data
-    int nword = *(m_buf+c) & 0x0FFFFFFF;
-    c++;
-    ret = m_fd->Read(m_buf+c, (nword-1) * sizeof(int));
-    c += ret / sizeof(int);
-  }
-  ret = m_fd->Read(m_buf+c, sizeof(int));
-  c++;
   StoredObject<RawEvent> ev;
-  ev->Read(m_buf);
+  StoredObject<RawFADCArray> fadcs;
+  ev->Reset();
+  fadcs->Reset();
+  m_fd->Read(&(ev->GetHeader()), sizeof(int));
+  m_fd->Read((&ev->GetHeader()+1), (ev->GetHeaderSize() - 1) * sizeof(int));
+  for (unsigned int i = 0; i < ev->GetNboards(); i++) {
+    m_fd->Read(m_buf, sizeof(int)); // read serial number
+    m_fd->Read(m_buf+1, sizeof(int)); // read waveform data
+    int nword = m_buf[1] & 0x0FFFFFFF;
+    m_fd->Read(m_buf+2, (nword - 1) * sizeof(int));
+    fadcs->Add(RawFADC(m_buf));
+    ev->Add(RawDataBlock(nword+1, m_buf));
+  }
+  m_fd->Read(&ev->GetTrailer(), sizeof(int) * ev->GetTrailerSize());
   if (m_shm.GetFd() > 0) {
     RunStatus* status = (RunStatus*)m_shm.Map();
     status->runNum = ev->GetRunNumber();
@@ -81,14 +78,12 @@ Bool_t RawDataInputModule::Read()
     strcpy(status->state, "RUNNING");
     status->eventNum = ev->GetEventNumber();
     status->nevents = status->nevents+1;
-    status->nbytes = status->nbytes + c * sizeof(int);
+    status->nbytes = status->nbytes + ev->GetSize() * sizeof(int);
   }
   StoredObject<EventMetaData> meta;
-  //meta->SetRunType(ev->GetRunType());
   meta->SetRunNumber(ev->GetRunNumber());
   meta->SetEventNumber(ev->GetEventNumber());
   meta->SetTriggerTime(ev->GetTriggerTime());
-  meta->SetTriggerBit(ev->GetTriggerBit());
   return true;
 }
 

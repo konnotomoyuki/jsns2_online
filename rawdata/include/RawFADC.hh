@@ -1,12 +1,12 @@
-#ifndef _JSNS2_FADC_h_
-#define _JSNS2_FADC_h_
+#ifndef _JSNS2_RawFADC_h_
+#define _JSNS2_RawFADC_h_
 
 #include <TObject.h>
 #include <vector>
 
 namespace JSNS2 {
 
-  class FADC : public TObject {
+  class RawFADC : public TObject {
     
   public:
     static const int MAX_CHANNELS = 8;
@@ -31,13 +31,14 @@ namespace JSNS2 {
     // Trigger time tag in data header
     UInt_t m_timeTag;
     // event samples in data body
-    std::vector<UChar_t> m_samples[MAX_CHANNELS];
+    std::vector<UChar_t> m_samples[8];
     
   public:
     // default constructor
-    FADC();
-    FADC(const FADC& fadc);
-    virtual ~FADC();
+    RawFADC();
+    RawFADC(UInt_t* buf);
+    RawFADC(const RawFADC& fadc);
+    virtual ~RawFADC();
     
     UInt_t Read(UInt_t* buf);
     UInt_t Write(UInt_t* buf);
@@ -66,11 +67,15 @@ namespace JSNS2 {
     // Event counter in data header
     UInt_t GetEventCount() const { return m_eventCount; }
     void SetEventCount(UInt_t eventCount) { m_eventCount = eventCount; }
+
     // Waveform samples in data body
-    std::vector<UChar_t>& GetSamples(Int_t channel) { return m_samples[channel]; }
-    const std::vector<UChar_t>& GetSamples(Int_t channel) const { return m_samples[channel]; }
+    std::vector<UChar_t>& At(Int_t channel) { return m_samples[channel]; }
+    const std::vector<UChar_t>& At(Int_t channel) const { return m_samples[channel]; }
+    std::vector<UChar_t>& operator[](Int_t channel) { return m_samples[channel]; }
+    const std::vector<UChar_t>& operator[](Int_t channel) const { return m_samples[channel]; }
     
-    ClassDef(FADC, 1); 
+    
+    ClassDef(RawFADC, 1); 
     
   };
 

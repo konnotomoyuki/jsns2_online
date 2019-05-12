@@ -2,10 +2,10 @@
 
 #include "DBObject.hh"
 #include "FADCMapping.hh"
+#include "PMTGeoMapping.hh"
 
 #include "StoredObject.hh"
-#include "RawEvent.hh"
-#include "PMTHitSummary.hh"
+#include "RawPulseArray.hh"
 
 #include "LogFile.hh"
 
@@ -26,8 +26,8 @@ HitMapHistModule::~HitMapHistModule()
 Bool_t HitMapHistModule::Initialize()
 {
   DBObject<DB::FADCMapping> mapping("FADCMapping");
-  StoredObject<PMTHitSummary> pmts;
-  int nPMTs = pmts->GetList().size();
+  DBObject<DB::PMTGeoMapping> pmts("PMTGeoMapping");
+  int nPMTs = pmts->GetNPMTs();
   m_PMT_charge_low = new TH1D("h_PMT_charge_low", "ID PMT Charge; Charge [ADC sum]", nPMTs+1, 0, nPMTs);
   m_PMT_timing_low = new TH1D("h_PMT_timing_low", "ID PMT Timing; Hit time [ADC sum]", nPMTs+1, 0, nPMTs);
   m_charge_avg_low = new TH1D("h_charge_avg_low", "PMT charge per channel; Charge [ADC sum]", 100, 0, 5000);
@@ -67,27 +67,25 @@ Bool_t HitMapHistModule::BeginRun()
 
 Bool_t HitMapHistModule::ProcessEvent()
 {
-  StoredObject<PMTHitSummary> pmts;
+  StoredObject<RawPulseArray> pmts;
   DBObject<DB::FADCMapping> mapping;
   m_charge_avg_low->Reset();
   m_timing_avg_low->Reset();
   m_charge_avg_high->Reset();
   m_timing_avg_high->Reset();
   // fills low gain channels
-  for (auto ip : pmts->GetList(false)) {
-    PMTHit& pmt(ip.second);
-    m_PMT_charge_low->SetBinContent(pmt.GetId()+1, pmt.GetCharge());
-    m_PMT_timing_low->SetBinContent(pmt.GetId()+1, pmt.GetTime());
-    m_charge_avg_low->Fill(pmt.GetCharge());
-    m_timing_avg_low->Fill(pmt.GetTime());
-  }
-  // fills high gain channels
-  for (auto ip : pmts->GetList(true)) {
-    PMTHit& pmt(ip.second);
-    m_PMT_charge_high->SetBinContent(pmt.GetId()+1, pmt.GetCharge());
-    m_PMT_timing_high->SetBinContent(pmt.GetId()+1, pmt.GetTime());
-    m_charge_avg_high->Fill(pmt.GetCharge());
-    m_timing_avg_high->Fill(pmt.GetTime());
+  for (auto& p : (*pmts)()) {
+    if (p.GetGain()) {
+      m_PMT_charge_high->SetBinContent(p.GetId()+1, p.GetCharge());
+      m_PMT_timing_high->SetBinContent(p.GetId()+1, p.GetTime());
+      m_charge_avg_high->Fill(p.GetCharge());
+      m_timing_avg_high->Fill(p.GetTime());
+    } else {
+      m_PMT_charge_low->SetBinContent(p.GetId()+1, p.GetCharge());
+      m_PMT_timing_low->SetBinContent(p.GetId()+1, p.GetTime());
+      m_charge_avg_low->Fill(p.GetCharge());
+      m_timing_avg_low->Fill(p.GetTime());
+    }
   }
   return true;
 }

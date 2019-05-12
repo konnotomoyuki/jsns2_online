@@ -4,10 +4,15 @@
 #pragma link off all functions;
 #pragma link C++ namespace JSNS2;
 #pragma link C++ class JSNS2::RawEvent+;
-#pragma link C++ class JSNS2::FADC+;
+#pragma link C++ struct JSNS2::RawEventHeader+;
+#pragma link C++ struct JSNS2::RawEventTrailer+;
+#pragma link C++ class JSNS2::RawDataBlock+;
+#pragma link C++ class JSNS2::RawFADC+;
+#pragma link C++ class JSNS2::RawFADCArray+;
 #pragma link C++ class std::vector<UChar_t>+;
-#pragma link C++ class std::vector<JSNS2::FADC>+;
-#pragma link C++ class JSNS2::PMTHit+;
-#pragma link C++ class JSNS2::PMTHitSummary+;
-#pragma link C++ class std::map<int, JSNS2::PMTHit>+;
+#pragma link C++ class std::vector<JSNS2::RawFADC>+;
+#pragma link C++ class std::vector<JSNS2::RawDataBlock>+;
+#pragma link C++ class JSNS2::RawPulse+;
+#pragma link C++ class std::vector<JSNS2::RawPulse>+;
+#pragma link C++ class JSNS2::RawPulseArray+;
 #endif
