@@ -35,7 +35,6 @@ Bool_t RawDataInputModule::Initialize()
   m_buf = new UInt_t[1024*1024*5];//20MB                                                                                 
   StoredObject<EventMetaData>::Create();
   StoredObject<RawEvent>::Create();
-  StoredObject<RawFADCArray>::Create();
   return true;
 }
 
@@ -57,17 +56,14 @@ Bool_t RawDataInputModule::BeginRun()
 Bool_t RawDataInputModule::Read()
 {
   StoredObject<RawEvent> ev;
-  StoredObject<RawFADCArray> fadcs;
   ev->Reset();
-  fadcs->Reset();
-  m_fd->Read(&(ev->GetHeader()), sizeof(int));
-  m_fd->Read((&ev->GetHeader()+1), (ev->GetHeaderSize() - 1) * sizeof(int));
-  for (unsigned int i = 0; i < ev->GetNboards(); i++) {
+  m_fd->Read(&(ev->GetHeader()), sizeof(ev->GetHeader()));
+  unsigned int nboards = ev->GetNboards();
+  for (unsigned int i = 0; i < nboards; i++) {
     m_fd->Read(m_buf, sizeof(int)); // read serial number
     m_fd->Read(m_buf+1, sizeof(int)); // read waveform data
     int nword = m_buf[1] & 0x0FFFFFFF;
     m_fd->Read(m_buf+2, (nword - 1) * sizeof(int));
-    fadcs->Add(RawFADC(m_buf));
     ev->Add(RawDataBlock(nword+1, m_buf));
   }
   m_fd->Read(&ev->GetTrailer(), sizeof(int) * ev->GetTrailerSize());

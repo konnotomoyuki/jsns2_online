@@ -3,7 +3,7 @@
 #include "StoredObject.hh"
 #include "EventMetaData.hh"
 #include "RawEvent.hh"
-#include "RawFADC.hh"
+#include "RawFADCArray.hh"
 #include "DBObject.hh"
 #include "FADCMapping.hh"
 
@@ -42,6 +42,7 @@ Bool_t DummyEventModule::Initialize()
 {
   StoredObject<EventMetaData>::Create();
   StoredObject<RawEvent>::Create();
+  StoredObject<RawFADCArray>::Create();
   if (m_filepath.size() > 0)  {
     m_file = new TFile(m_filepath.c_str());
     m_tree = (TTree*)m_file->Get("MCData");
@@ -72,7 +73,7 @@ Bool_t DummyEventModule::ProcessEvent()
   meta->SetEventNumber(m_eventNum);
   StoredObject<RawEvent> ev;
   ev->Reset();
-  ev->SetHeaderSize(3);
+  ev->SetHeaderSize(sizeof(RawEventHeader) / sizeof(int));
   ev->SetHeaderMagic(0xfa);
   ev->SetTrailerMagic(0xcafebabe);
   if (m_eventNum > 100000) {
@@ -87,6 +88,8 @@ Bool_t DummyEventModule::ProcessEvent()
   DBObject<DB::FADCMapping> mapping;
   Double_t v[256];
   UInt_t buf[1024];
+  StoredObject<RawFADCArray> fadcs;
+  fadcs->Reset();
   for (auto& ib : mapping->GetBoards()) {
     DB::FADCBoard& board(ib.second);
     RawFADC fadc;
@@ -125,6 +128,7 @@ Bool_t DummyEventModule::ProcessEvent()
     }
     int nword = fadc.Write(buf);
     ev->Add(RawDataBlock(nword, buf));
+    fadcs->Add(fadc);
   }
   m_eventNum++;
   return true;

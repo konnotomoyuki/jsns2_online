@@ -14,13 +14,16 @@ namespace JSNS2 {
     
   public:
     // default constructor
-    RawDataBlock(int n=0, UInt_t* buf = NULL);
+    RawDataBlock() {}
+    RawDataBlock(int n, UInt_t* buf);
+    RawDataBlock(const RawDataBlock& block);
     virtual ~RawDataBlock() {}
     
     // DataBlock samples in data body
     std::vector<UInt_t>& Data() { return m_data; }
     const std::vector<UInt_t>& Data() const { return m_data; }
     UInt_t* Ptr() { return (m_data.size()>0)?&(m_data[0]):NULL; }
+    const UInt_t* Ptr() const { return (m_data.size()>0)?&(m_data[0]):NULL; }
     UInt_t GetSize() const { return m_data.size(); }
     
     ClassDef(RawDataBlock, 1); 

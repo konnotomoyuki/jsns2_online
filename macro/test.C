@@ -6,6 +6,7 @@
   dummy->SetFilePath(Form("%s/data/uniformPositron10MeV-Tree.root", getenv("JSNS2_HOME")));
   RootFileOutputModule* output = new RootFileOutputModule();
   output->SetPath("dump.root");
+  //output->Exclude("RawEvent");
 
   Processor process;
   process.Add(dummy);

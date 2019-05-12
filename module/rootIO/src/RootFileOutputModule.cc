@@ -24,10 +24,18 @@ Bool_t RootFileOutputModule::Initialize()
 {
   m_file = new TFile(m_path.c_str(), "recreate");
   m_tree = new TTree("tree", "JSNS2 Event Tree");
-  std::map<std::string, TObject*>& map(DataStore::Instance().GetList());
-  for (std::map<std::string, TObject*>::iterator it = map.begin();
-       it != map.end(); it++) {
-    m_tree->Branch(it->first.c_str(), it->second);
+  for (auto& it : DataStore::Instance().GetList()) {
+    std::string name = it.first;
+    bool excluded = false;
+    for (auto& exclude_name : m_exclude_names) {
+      if (name.find(exclude_name) != std::string::npos) {
+	excluded = true;
+	break;
+      }
+    }
+    if (!excluded) {
+      m_tree->Branch(it.first.c_str(), &(it.second));
+    }
   }  
   return true;
 }
@@ -52,10 +60,18 @@ Bool_t RootFileOutputModule::Finalize()
 {
   TList* list = new TList();
   list->SetName("list");
-  std::map<std::string, TObject*>& map(DataStore::Instance().GetList());
-  for (std::map<std::string, TObject*>::iterator it = map.begin();
-       it != map.end(); it++) {
-    list->Add(it->second);
+  for (auto& it : DataStore::Instance().GetList()) {
+    std::string name = it.first;
+    bool excluded = false;
+    for (auto& exclude_name : m_exclude_names) {
+      if (name.find(exclude_name) != std::string::npos) {
+	excluded = true;
+	break;
+      }
+    }
+    if (!excluded) {
+      list->Add(it.second);
+    }
   }
   LogFile::info("Root tree is saved to %s", m_file->GetName());
   m_file->cd();

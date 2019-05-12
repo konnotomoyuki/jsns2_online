@@ -53,8 +53,8 @@ void RawEvent::SetNboards(UInt_t nboards)
 UInt_t RawEvent::GetSize() const
 {
   UInt_t size = GetHeaderSize() + GetTrailerSize();
-  for (auto& block : (*this)()) {
-    size +=block.Data().size();
+  for (auto& block : m_blocks) {
+    size += block.GetSize();
   }
   return size;
 }

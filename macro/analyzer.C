@@ -1,4 +1,5 @@
 #include "SharedEventBufferInputModule.hh"
+#include "RawFADCUnpackerModule.hh"
 #include "RecoPulseSimpleModule.hh"
 #include "RecoPulseSimpleHistModule.hh"
 #include "HitMapHistModule.hh"
@@ -12,6 +13,7 @@ int analyzer()
   SharedEventBufferInputModule* input = new SharedEventBufferInputModule();
   input->SetPath("DQMEvent.shm");
   input->SetNword(10000000);
+  RawFADCUnpackerModule* unpack = new RawFADCUnpackerModule();
   RecoPulseSimpleModule* reco = new RecoPulseSimpleModule();
   RecoPulseSimpleHistModule* reco_h = new RecoPulseSimpleHistModule();
   HitMapHistModule* hitmap = new HitMapHistModule();
@@ -21,6 +23,7 @@ int analyzer()
 
   Processor process;
   process.Add(input);
+  process.Add(unpack);
   process.Add(reco);
   process.Add(reco_h);
   process.Add(hitmap);

@@ -2,7 +2,6 @@
 
 #include "StoredObject.hh"
 #include "RawEvent.hh"
-#include "RawFADCArray.hh"
 #include "EventMetaData.hh"
 
 using namespace JSNS2;
@@ -26,7 +25,7 @@ Bool_t SharedEventBufferInputModule::Initialize()
 {
   m_buf = new unsigned int[1024*1024*5];//20MB                                                                                 
   StoredObject<EventMetaData>::Create();
-  StoredObject<RawFADCArray>::Create();
+  StoredObject<RawEvent>::Create();
   m_shm.Open(m_path, m_nword, true);
   m_shm.Init();
   m_isFirst = true;
@@ -43,21 +42,21 @@ Bool_t SharedEventBufferInputModule::Read()
 {
   UInt_t* p = m_buf;
   m_shm.Read(p);
-  RawEvent ev;
-  memcpy(&(ev.GetHeader()), p, sizeof(ev.GetHeader()));
-  p+= ev.GetHeaderSize();
-  StoredObject<RawFADCArray> fadcs;
-  fadcs->Reset();
-  for (unsigned int i = 0; i < ev.GetNboards(); i++) {
-    RawFADC fadc;
-    p += fadc.Read(p);
-    fadcs->Add(fadc);
+  StoredObject<RawEvent> ev;
+  memcpy(&(ev->GetHeader()), p, sizeof(ev->GetHeader()));
+  p+= ev->GetHeaderSize();
+  unsigned int nboards = ev->GetNboards();
+  for (unsigned int i = 0; i < nboards; i++) {
+    int nword = p[1] & 0x0FFFFFFF;
+    ev->Add(RawDataBlock(nword+1, p));
+    p += nword + 1;
   }
-  p+= ev.GetTrailerSize();
+  memcpy(&ev->GetTrailer(), p, sizeof(int) * ev->GetTrailerSize());
+  p+= ev->GetTrailerSize();
   StoredObject<EventMetaData> meta;
-  meta->SetRunNumber(ev.GetRunNumber());
-  meta->SetEventNumber(ev.GetEventNumber());
-  meta->SetTriggerTime(ev.GetTriggerTime());
+  meta->SetRunNumber(ev->GetRunNumber());
+  meta->SetEventNumber(ev->GetEventNumber());
+  meta->SetTriggerTime(ev->GetTriggerTime());
   return true;
 }
 

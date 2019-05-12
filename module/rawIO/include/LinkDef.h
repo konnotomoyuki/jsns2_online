@@ -11,4 +11,5 @@
 #pragma link C++ class JSNS2::RawDataFileOutputModule+;
 #pragma link C++ class JSNS2::RawDataSocketInputModule+;
 #pragma link C++ class JSNS2::RawDataSocketOutputModule+;
+#pragma link C++ class JSNS2::RawFADCUnpackerModule+;
 #endif

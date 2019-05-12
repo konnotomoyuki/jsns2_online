@@ -20,6 +20,12 @@ RootFileInputModule::~RootFileInputModule()
 
 void RootFileInputModule::Add(TObject* obj)
 {
+  std::string name = obj->ClassName();
+  for (auto& exclude_name : m_exclude_names) {
+    if (name.find(exclude_name) != std::string::npos) {
+      return;
+    }
+  }
   DataStore::Instance().Add(obj);
 }
 

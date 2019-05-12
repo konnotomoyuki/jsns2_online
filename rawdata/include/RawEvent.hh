@@ -74,7 +74,10 @@ namespace JSNS2 {
     RawDataBlock& operator[](Int_t id) { return m_blocks[id]; }
     const std::vector<RawDataBlock>& operator()() const { return m_blocks; }
     std::vector<RawDataBlock>& operator()() { return m_blocks; }
-    void Add(const RawDataBlock& block) { m_blocks.push_back(block); }
+    void Add(const RawDataBlock& block) { 
+      m_blocks.push_back(block);
+      m_header.nboards = m_blocks.size();
+    }
 
     ClassDef(RawEvent, 1); 
     
