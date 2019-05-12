@@ -2,9 +2,12 @@
 JSNS2 Online Analysis Software Tool is a general software framework for
 online data analysis including event builidng, pulse reconstruction and event display.
 
-## Requirement :
+## Requirements
 - Linux OS (Tested with scientific linux 7)
-- Root 6 (6.14.06 or later)
+- gcc 4.8.5 (default of Scientific Linux)
+- python 2.7.11 (default of Scientific Linux)
+- cmake 3 (3.14.3)
+- Root 6 (6.16.00 or later)
 - bash
 - (Optional) epics-base R3.14
  
