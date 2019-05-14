@@ -6,6 +6,10 @@
 #include "RawFADCArray.hh"
 #include "RunStatus.hh"
 
+#include "LogFile.hh"
+
+#include <zlib.h>
+
 using namespace JSNS2;
 
 RawDataInputModule::RawDataInputModule(const char* name) : Module(name)
@@ -75,6 +79,15 @@ Bool_t RawDataInputModule::Read()
     status->eventNum = ev->GetEventNumber();
     status->nevents = status->nevents+1;
     status->nbytes = status->nbytes + ev->GetSize() * sizeof(int);
+  }
+  unsigned int chksum = 0;
+  chksum = adler32(chksum, (unsigned char*)(&ev->GetHeader()), ev->GetHeaderSize() * sizeof(int));
+  for (auto& block : (*ev)()) {
+    chksum = adler32(chksum, (unsigned char*)block.Ptr(), block.GetSize() * sizeof(int));
+  }
+  chksum = adler32(chksum, (unsigned char*)(&ev->GetTrailer()), sizeof(int));
+  if (chksum != ev->GetTrailerCheckSum()) {
+    LogFile::error("Check sum error 0x%x != 0x%x", chksum, ev->GetTrailerCheckSum());
   }
   StoredObject<EventMetaData> meta;
   meta->SetRunNumber(ev->GetRunNumber());

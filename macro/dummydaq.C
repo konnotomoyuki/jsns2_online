@@ -8,7 +8,7 @@ int dummydaq()
 {
   DummyEventModule* dummy = new DummyEventModule();
   dummy->SetRunNumber(1010);
-  dummy->SetFilePath(Form("%s/data/uniformPositron10MeV-Tree.root", getenv("JSNS2_HOME")));
+  //dummy->SetFilePath(Form("%s/data/uniformPositron10MeV-Tree.root", getenv("JSNS2_HOME")));
   RawDataSocketOutputModule* output = new RawDataSocketOutputModule();
   output->SetHostname("localhost");
   output->SetPort(9090);

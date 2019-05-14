@@ -20,7 +20,7 @@ int receiver()
   shm->SetNword(10000000);
 
   RawDataFileOutputModule* output = new RawDataFileOutputModule();
-  output->SetPath("/home/usr/tkonno/");
+  output->SetPath("/home/tkonno/disk/");
   output->SetAutoMode(true);
 
   Processor process;

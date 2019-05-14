@@ -15,6 +15,8 @@
 #include <cstdlib>
 #include <iostream>
 
+#include <zlib.h>
+
 using namespace JSNS2;
 
 Double_t myfunction(Double_t *x, Double_t *par)
@@ -23,7 +25,6 @@ Double_t myfunction(Double_t *x, Double_t *par)
   Double_t f = par[1] * TMath::Gaus(x[0], par[0], sigma, kTRUE);
   return f;
 }
-
 
 DummyEventModule::DummyEventModule() : Module ("DummyEvent")
 {
@@ -74,18 +75,19 @@ Bool_t DummyEventModule::ProcessEvent()
 {
   m_time += gRandom->Exp(1./300.*1e9) * 16;
   StoredObject<EventMetaData> meta;
-  meta->SetEventNumber(m_eventNum);
   StoredObject<RawEvent> ev;
   ev->Reset();
   ev->SetHeaderSize(sizeof(RawEventHeader) / sizeof(int));
   ev->SetHeaderMagic(0xfa);
   ev->SetTrailerMagic(0xcafebabe);
-  if (m_eventNum > 100000) {
+  if (m_eventNum > 10000) {
     m_eventNum = 0;
     m_runNum++;
-    meta->SetRunNumber(m_runNum);
-    ev->SetRunNumber(m_runNum);
   }
+  meta->SetRunNumber(m_runNum);
+  meta->SetEventNumber(m_eventNum);
+  ev->SetEventNumber(m_eventNum);
+  ev->SetRunNumber(m_runNum);
   if (m_tree) {
     m_tree->GetEntry(m_eventNum % (int)m_tree->GetEntries());
   }
@@ -106,7 +108,6 @@ Bool_t DummyEventModule::ProcessEvent()
   }
   TVector3 vtx(x,y,z);
   Double_t charge = gRandom->Rndm();
-
   for (auto& ib : mapping->GetBoards()) {
     DB::FADCBoard& board(ib.second);
     RawFADC fadc;
@@ -153,6 +154,13 @@ Bool_t DummyEventModule::ProcessEvent()
     ev->Add(RawDataBlock(nword, buf));
     fadcs->Add(fadc);
   }
+  unsigned int chksum = 0;
+  chksum = adler32(chksum, (unsigned char*)(&ev->GetHeader()), ev->GetHeaderSize() * sizeof(int));
+  for (auto& block : (*ev)()) {
+    chksum = adler32(chksum, (unsigned char*)block.Ptr(), block.GetSize() * sizeof(int));
+  }
+  chksum = adler32(chksum, (unsigned char*)(&ev->GetTrailer()), sizeof(int));
+  ev->SetTrailerCheckSum(chksum);
   m_eventNum++;
   return true;
 }
